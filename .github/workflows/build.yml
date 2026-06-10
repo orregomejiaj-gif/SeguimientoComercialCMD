@@ -22,10 +22,9 @@ jobs:
         run: npm install
 
       - name: Compilar instalador Windows
+        run: npx electron-builder --win portable --x64
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          WIN_CSC_LINK: ""
-        run: npx electron-builder --win portable --x64
 
       - name: Publicar en GitHub Releases
         uses: softprops/action-gh-release@v2
@@ -34,18 +33,10 @@ jobs:
           name: "App Seguimiento Comercial CMD ${{ github.ref_name }}"
           body: |
             ## App Seguimiento Comercial CMD
-            
             **Versión:** ${{ github.ref_name }}
-            
             ### Instalación
             1. Descarga el archivo `.exe`
             2. Doble clic para abrir
             3. La app inicia directamente sin instalación
-            
-            ### Novedades de esta versión
-            - Describe aquí los cambios
-            
-            ---
-            © 2026 Juan Orrego — Proceso PYV Comercial — Cooperativa Minuto de Dios
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
