@@ -1,0 +1,44 @@
+{
+  "name": "seguimiento-comercial-cmd",
+  "version": "1.1789.0",
+  "description": "App Seguimiento Comercial - Proceso Preventa y Venta - Cooperativa Minuto de Dios",
+  "main": "main.js",
+  "author": "Juan Orrego",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build-win": "electron-builder --win portable --x64",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.cmd.seguimientocomercial",
+    "productName": "Seguimiento Comercial CMD",
+    "copyright": "© 2026 Juan Orrego - Cooperativa Minuto de Dios",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "app/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "app/icon-512.png"
+    },
+    "forceCodeSigning": false
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0",
+    "cross-env": "^7.0.3"
+  }
+}

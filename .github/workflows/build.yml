@@ -1,0 +1,51 @@
+name: Compilar App Seguimiento CMD
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Compilar instalador Windows
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          WIN_CSC_LINK: ""
+        run: npx electron-builder --win portable --x64
+
+      - name: Publicar en GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          name: "App Seguimiento Comercial CMD ${{ github.ref_name }}"
+          body: |
+            ## App Seguimiento Comercial CMD
+            
+            **Versión:** ${{ github.ref_name }}
+            
+            ### Instalación
+            1. Descarga el archivo `.exe`
+            2. Doble clic para abrir
+            3. La app inicia directamente sin instalación
+            
+            ### Novedades de esta versión
+            - Describe aquí los cambios
+            
+            ---
+            © 2026 Juan Orrego — Proceso PYV Comercial — Cooperativa Minuto de Dios
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
