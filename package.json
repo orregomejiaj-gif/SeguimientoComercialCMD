@@ -21,24 +21,25 @@
     },
     "files": [
       "main.js",
-      "app/**/*"
+      "app/**/*",
+      "preload.js"
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ],
-      "icon": "app/icon-512.png"
+      "icon": "app/icon-512.png",
+      "signingHashAlgorithms": null,
+      "sign": null
     },
     "forceCodeSigning": false,
     "publish": {
       "provider": "github",
       "owner": "orregomejiaj-gif",
-      "repo": "seguimiento-cmd",
+      "repo": "SeguimientoComercialCMD",
       "private": true,
       "releaseType": "release"
     },
