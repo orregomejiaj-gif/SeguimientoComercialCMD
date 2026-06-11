@@ -4,15 +4,8 @@ const path = require('path');
 
 let mainWindow;
 
-// ── CONFIGURE AUTO-UPDATER FOR PRIVATE REPO ──
-// GH_TOKEN is injected at build time via electron-builder
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
-
-// Logger para debug
-autoUpdater.logger = require('electron').app
-  ? null
-  : console;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -36,10 +29,9 @@ function createWindow() {
   mainWindow.once('ready-to-show', function() {
     mainWindow.show();
     mainWindow.focus();
-    // Check for updates 15 seconds after window loads
     setTimeout(function() {
       autoUpdater.checkForUpdates().catch(function(err) {
-        console.log('Update check failed (normal if no internet):', err.message);
+        console.log('Update check failed:', err.message);
       });
     }, 15000);
   });
@@ -52,32 +44,22 @@ function createWindow() {
   mainWindow.on('closed', function() { mainWindow = null; });
 }
 
-// ── AUTO UPDATER EVENTS ──
-autoUpdater.on('checking-for-update', function() {
-  console.log('Verificando actualizaciones...');
-});
-
 autoUpdater.on('update-available', function(info) {
   if (!mainWindow) return;
   dialog.showMessageBox(mainWindow, {
     type: 'info',
-    title: 'Actualización disponible',
-    message: 'Nueva versión ' + info.version + ' disponible',
-    detail: 'Se descargará automáticamente en segundo plano mientras usas la app.
-Se instalará la próxima vez que la cierres.',
+    title: 'Actualizacion disponible',
+    message: 'Nueva version ' + info.version + ' disponible',
+    detail: 'Se descargara en segundo plano. Se instalara al cerrar la app.',
     buttons: ['Entendido'],
     icon: path.join(__dirname, 'app', 'icon-512.png')
   });
 });
 
-autoUpdater.on('update-not-available', function() {
-  console.log('La app está actualizada.');
-});
-
 autoUpdater.on('download-progress', function(progress) {
   if (mainWindow) {
     mainWindow.setProgressBar(progress.percent / 100);
-    mainWindow.setTitle('Descargando actualización: ' + Math.round(progress.percent) + '%');
+    mainWindow.setTitle('Descargando: ' + Math.round(progress.percent) + '%');
   }
 });
 
@@ -89,12 +71,10 @@ autoUpdater.on('update-downloaded', function(info) {
   if (!mainWindow) return;
   dialog.showMessageBox(mainWindow, {
     type: 'info',
-    title: 'Actualización lista para instalar',
-    message: 'Versión ' + info.version + ' descargada',
-    detail: '¿Deseas instalar la actualización ahora?
-
-Si eliges "Después", se instalará automáticamente la próxima vez que cierres la app.',
-    buttons: ['Instalar ahora', 'Instalar después'],
+    title: 'Actualizacion lista',
+    message: 'Version ' + info.version + ' lista para instalar',
+    detail: 'Instalar ahora o al cerrar la app?',
+    buttons: ['Instalar ahora', 'Instalar despues'],
     defaultId: 0,
     cancelId: 1,
     icon: path.join(__dirname, 'app', 'icon-512.png')
@@ -106,17 +86,11 @@ Si eliges "Después", se instalará automáticamente la próxima vez que cierres
 });
 
 autoUpdater.on('error', function(err) {
-  console.log('Error en auto-updater:', err.message);
-  // Silent fail — no mostrar error al usuario
+  console.log('Auto-updater error:', err.message);
 });
 
-// ── IPC ──
 ipcMain.handle('get-app-version', function() {
   return app.getVersion();
-});
-
-ipcMain.handle('check-for-updates', function() {
-  return autoUpdater.checkForUpdates();
 });
 
 Menu.setApplicationMenu(null);
