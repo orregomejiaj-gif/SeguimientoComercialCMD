@@ -1406,6 +1406,24 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
     </div>
     <div id="acta-preview-container" style="display:none;margin-top:14px"></div>
   </div>
+
+  <!-- BARRA FINALIZAR SEGUIMIENTO -->
+  <div style="margin-top:24px;padding:20px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #16a34a;border-radius:16px;text-align:center">
+    <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:6px">
+      <i class="ti ti-checks" style="font-size:16px"></i> Seguimiento completado
+    </div>
+    <div style="font-size:11px;color:#166534;margin-bottom:14px">
+      Al finalizar, todos los datos se guardarán automáticamente en Google Sheets
+    </div>
+    <button onclick="finalizarSeguimiento()" 
+      style="background:#16a34a;color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:Ubuntu,sans-serif;box-shadow:0 4px 14px rgba(22,163,74,.3)">
+      <i class="ti ti-device-floppy"></i> Finalizar y guardar en Google Sheets
+    </button>
+    <div style="font-size:10px;color:#166534;margin-top:8px;opacity:.7">
+      El formulario se reiniciará automáticamente para el siguiente seguimiento
+    </div>
+  </div>
+
 </div>
 
 
@@ -1914,6 +1932,8 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
 
 
 <script>
+
+
 
 
 
@@ -8651,6 +8671,71 @@ function initEmpSelectors(){
   });
 }
 
+
+// ══════════════════════════════════════════════
+// INTEGRACIÓN GOOGLE SHEETS — PYV CMD
+// ══════════════════════════════════════════════
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbyguG6xSqbvCJunYFPjjA2cAMvschgszUts2kDqYNUzWSKUqIY-zjFpEG1aX0zdO3MlqA/exec";
+
+function enviarASheets(callback){
+  if(!sesionActiva){
+    mostrarAlertaNav('Debes iniciar sesion antes de finalizar el seguimiento.');
+    return;
+  }
+
+  var payload = {
+    tipo: mode,
+    fechaSeg: state.fechaSeg || new Date().toLocaleDateString('es-CO'),
+    mes: state.mes || '',
+    anio: state.anio || '2026',
+    rectoria: state.rectoria || '',
+    sedes: state.sedes || [],
+    ejecutor: navState.nombreEjecutor || '',
+    correoEjecutor: navState.correoEjecutor || '',
+    coordinador: state.coordinador || '',
+    coordinadorCedula: state.coordinadorCedula || '',
+    coordinadorCorreo: state.coordinadorCorreo || '',
+    asesor_nombre: state.asesor_nombre || '',
+    asesor_cedula: state.asesor_cedula || '',
+    asesor_correo: state.asesor_correo || '',
+    asesor_cargo: state.asesor_cargo || '',
+    asesor_antiguedad: state.asesor_antiguedad || '',
+    coordinador_asesor: state.coordinador_asesor || '',
+    coordinador_asesor_cedula: state.coordinador_asesor_cedula || '',
+    coordinador_asesor_correo: state.coordinador_asesor_correo || '',
+    num_asesores: state.num_asesores || 0,
+    metas: state.metas || {},
+    seguimiento: state.seguimiento || {}
+  };
+
+  mostrarAlertaNav('Enviando seguimiento a Google Sheets...');
+
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(){
+    mostrarAlertaNav('Seguimiento guardado correctamente en Google Sheets.');
+    if(callback) callback();
+  }).catch(function(err){
+    mostrarAlertaNav('Error al enviar: ' + err.message + '. Verifica tu conexion.');
+  });
+}
+
+function finalizarSeguimiento(){
+  if(!navState.h2Guardada){
+    mostrarAlertaNav('Completa y guarda la Hoja 2 antes de finalizar.');
+    return;
+  }
+  if(!confirm('¿Finalizar y guardar el seguimiento en Google Sheets?')) return;
+  enviarASheets(function(){
+    setTimeout(function(){
+      borrarTodo(false);
+    }, 2000);
+  });
+}
+
 window.addEventListener('load',init);
 
 
@@ -8732,6 +8817,8 @@ function iniciarSeguimientoAsesor(){
     mostrarAlertaNav('Seguimiento Asesor iniciado. Completa las metas en Hoja 1.');
   }, 300);
 }
+
+
 
 
 
