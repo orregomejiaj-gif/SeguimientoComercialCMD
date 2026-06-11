@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -21,18 +24,9 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Compilar instalador Windows
-        run: npx electron-builder --win portable --x64
+      - name: Compilar e instalar Windows
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
-
-      - name: Publicar en GitHub Releases
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*.exe
-          name: "App Seguimiento Comercial CMD ${{ github.ref_name }}"
-          body: |
-            ## App Seguimiento Comercial CMD
-            **Versión:** ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WIN_CSC_LINK: ""
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --x64 --publish always

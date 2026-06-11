@@ -28,6 +28,8 @@ body{font-family:'Ubuntu',sans-serif;background:var(--bg);color:var(--text);min-
 .btn-h:hover{background:rgba(255,255,255,.22)}
 
 /* TABS */
+#tabs-bar{transition:.3s;overflow:hidden;max-height:0;opacity:0}
+#tabs-bar.visible{max-height:60px;opacity:1}
 .tabs{display:flex;gap:0;margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .tab{flex:1;padding:10px 12px;border:none;border-right:1px solid var(--border);background:var(--white);cursor:pointer;font-size:12px;font-family:'Ubuntu',sans-serif;color:var(--text2);transition:.15s;display:flex;align-items:center;gap:6px;justify-content:center}
 .tab:last-child{border-right:none}
@@ -333,6 +335,16 @@ select[multiple]{height:120px;padding:4px}
   opacity: .5;
   pointer-events: none;
 }
+
+.emp-selector-wrap{position:relative}
+.emp-selector-wrap input{width:100%;padding:8px 10px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:Ubuntu,sans-serif}
+.emp-selector-wrap input:focus{outline:none;border-color:var(--teal)}
+.emp-dropdown{position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1.5px solid var(--teal);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:99999;max-height:220px;overflow-y:auto;display:none;min-width:280px}
+.emp-dropdown.open{display:block}
+.emp-option{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #f3f4f6;transition:.15s}
+.emp-option:hover{background:var(--teal-l)}
+.emp-option .emp-name{font-weight:600;color:var(--dark)}
+.emp-option .emp-detail{font-size:10px;color:var(--text2);margin-top:1px}
 </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003D45">
@@ -354,114 +366,223 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
     <img src="data:image/png;base64,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" alt="Cooperativa Minuto de Dios" style="height:40px;width:auto;background:#fff;border-radius:6px;padding:3px 8px;object-fit:contain">
     <div class="sep"></div>
     <div>
-      <h1 id="hdr-title" style="font-size:13px;font-weight:700;color:#fff;line-height:1.2">App Seguimiento Comercial</h1>
-      <p id="hdr-subtitle" style="font-size:10px;color:rgba(255,255,255,.7);margin-top:1px">Preventa y Venta — Cooperativa Minuto de Dios</p>
-      <p id="fecha-hdr" style="font-size:10px;color:rgba(255,255,255,.55);margin-top:1px"></p>
+      <div id="hdr-breadcrumb" style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:700;color:var(--yellow)">PYV-Comercial</span>
+        <span id="bc-sep1" style="color:rgba(255,255,255,.35);font-size:10px;display:none">›</span>
+        <span id="bc-nivel1" style="font-size:11px;color:rgba(255,255,255,.8);display:none"></span>
+        <span id="bc-sep2" style="color:rgba(255,255,255,.35);font-size:10px;display:none">›</span>
+        <span id="bc-nivel2" style="font-size:11px;color:#fff;font-weight:600;display:none"></span>
+      </div>
+      <p style="font-size:9px;color:rgba(255,255,255,.5);margin-top:2px">Cooperativa Minuto de Dios</p>
     </div>
       
-    <div class="hdr-actions">
-      <button class="btn-h" onclick="abrirCartaCompromisosMenu()" style="background:rgba(255,217,0,0.2);border-color:rgba(255,217,0,0.5)"><i class="ti ti-file-certificate"></i> Cartas metas</button>
-      <button class="btn-h" onclick="abrirModalCompromisos()" style="background:rgba(129,56,140,0.15);border-color:rgba(129,56,140,0.4)"><i class="ti ti-clipboard-text"></i> Compromisos</button>
-      <button class="btn-h" onclick="abrirCalculadoraAnticipo()" style="background:#166534;border-color:#166534;color:#fff;font-weight:700"><i class="ti ti-calculator"></i> Anticipo</button>
-      <button class="btn-h" onclick="borrarTodo()" style="background:#dc2626;border-color:#dc2626;color:#fff;font-weight:700"><i class="ti ti-trash"></i> Borrar todo</button>
+    <div class="hdr-actions" id="hdr-actions-bar" style="display:none">
+      <button class="btn-h" onclick="borrarTodo()" style="background:#dc2626;border-color:#dc2626;color:#fff;font-weight:700"><i class="ti ti-trash"></i> Borrar</button>
+      <button class="btn-h" onclick="exportarDatos()" style="background:var(--dark);border-color:var(--dark);color:#fff"><i class="ti ti-download"></i> Exportar</button>
       <input type="file" id="comp-file" style="display:none" accept=".json" onchange="cargarJSONComp(event)">
     </div>
-  </div>
+    <div id="app-version-badge" style="font-size:9px;font-weight:700;color:rgba(255,217,0,.7);letter-spacing:.5px;margin-top:1px;display:none"></div>
+</div>
   <div class="hdr-accent"><div class="ha-t"></div><div class="ha-y"></div><div class="ha-g"></div></div>
 </div>
 
 <!-- TABS -->
-<div class="tabs">
-  <button class="tab active" onclick="showTab('h0',this)"><span class="tdot"></span><i class="ti ti-home"></i><span class="tab-txt"> Inicio</span></button>
+<div id="tabs-bar"><div class="tabs">
+  <button class="tab active" onclick="showTab('h0',this)" title="Menú principal"><span class="tdot"></span><i class="ti ti-home"></i></button>
   <button class="tab" onclick="showTab('h1',this)"><span class="tdot"></span><i class="ti ti-target"></i> Hoja 1 — Metas</button>
   <button class="tab" onclick="showTab('h2',this)"><span class="tdot"></span><i class="ti ti-chart-line"></i> Hoja 2 — Seguimiento</button>
   <button class="tab" onclick="showTab('h3',this)"><span class="tdot"></span><i class="ti ti-report-analytics"></i> Hoja 3 — Análisis & Acta</button>
   <button class="tab" onclick="showTab('h4',this)"><span class="tdot"></span><i class="ti ti-git-compare"></i> Hoja 4 — Comparativo</button>
-</div>
+</div></div>
 
 <!-- HOJA INICIO -->
 <div id="h0" class="sheet active">
-  <div style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:20px 0">
-    <div style="max-width:680px;width:100%">
 
-      <!-- HERO BANNER -->
-      <div style="background:linear-gradient(135deg,var(--dark) 0%,#005a66 60%,#007a80 100%);border-radius:20px;padding:36px 32px 28px;margin-bottom:18px;position:relative;overflow:hidden">
-        <!-- Decorative circles -->
-        <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(0,176,185,.25)"></div>
-        <div style="position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,217,0,.15)"></div>
-        <div style="position:absolute;top:10px;right:60px;width:40px;height:40px;border-radius:50%;background:rgba(174,201,0,.3)"></div>
-        <!-- Content -->
-        <div style="position:relative;z-index:1">
-          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-            <div style="width:52px;height:36px;background:var(--yellow);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--dark)">MD</div>
-            <div>
-              <div style="color:rgba(255,255,255,.6);font-size:10px;text-transform:uppercase;letter-spacing:1px">Proceso PYV Comercial</div>
-              <div style="color:#fff;font-size:14px;font-weight:700">Cooperativa Minuto de Dios</div>
-            </div>
-          </div>
-          <div style="color:var(--yellow);font-size:22px;font-weight:700;line-height:1.3;margin-bottom:8px">
-            "Los grandes resultados nacen de pequeñas acciones consistentes."
-          </div>
-          <div style="color:rgba(255,255,255,.7);font-size:13px;line-height:1.6">
-            Bienvenido al sistema de seguimiento comercial. Cada dato que registras hoy construye el resultado de mañana. ¡Hagámoslo con excelencia!
-          </div>
+<!-- ═══════════ ETAPA 1: LOGIN ═══════════ -->
+<div id="etapa-login" style="min-height:85vh;display:flex;align-items:center;justify-content:center;padding:20px 0">
+  <div style="max-width:460px;width:100%">
+
+    <!-- Logo + encabezado -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:44px;background:var(--dark);border-radius:12px;margin-bottom:14px">
+        <span style="color:var(--yellow);font-weight:900;font-size:18px;letter-spacing:-1px">MD</span>
+      </div>
+      <div style="color:var(--dark);font-size:22px;font-weight:700;line-height:1.3">App Seguimiento Comercial</div>
+      <div style="color:var(--text2);font-size:13px;margin-top:6px">Proceso Preventa y Venta — Cooperativa Minuto de Dios</div>
+    </div>
+
+    <!-- Frase motivacional -->
+    <div style="background:linear-gradient(135deg,var(--dark),#005a66);border-radius:14px;padding:18px 20px;margin-bottom:24px;text-align:center">
+      <div style="color:var(--yellow);font-size:14px;font-style:italic;line-height:1.6">"Los grandes resultados nacen de pequeñas acciones consistentes."</div>
+      <div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:6px">Bienvenido al sistema de seguimiento. ¡Hagámoslo con excelencia!</div>
+    </div>
+
+    <!-- Login card -->
+    <div style="background:#fff;border-radius:16px;padding:28px 24px;border:1.5px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.07)">
+      <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:18px;display:flex;align-items:center;gap:8px">
+        <i class="ti ti-lock" style="color:var(--teal-d)"></i> Acceso al sistema
+      </div>
+
+      <!-- Usuario input -->
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Usuario corporativo</label>
+        <div style="display:flex;align-items:center;border:2px solid var(--border);border-radius:10px;overflow:hidden;transition:.2s" id="login-input-wrap">
+          <input type="text" id="login-usuario" placeholder="nombre.apellido"
+            oninput="buscarEmpleado(this.value)"
+            onkeypress="if(event.key==='Enter')loginIngresar()"
+            style="flex:1;padding:11px 14px;border:none;outline:none;font-size:14px;font-family:Ubuntu,sans-serif;color:var(--dark);background:transparent">
+          <span style="padding:11px 14px;color:var(--text2);font-size:13px;background:#f9fafb;border-left:1px solid var(--border);white-space:nowrap">@coopminutodedios.com</span>
         </div>
       </div>
 
-      <!-- NOMBRE Y ACCESO -->
-      <div style="background:var(--white);border-radius:16px;padding:28px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)">
-        <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px">¿Quién realiza este seguimiento?</div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Tu nombre quedará registrado en el acta y en todos los campos del seguimiento.</div>
-        <div style="display:flex;gap:10px;align-items:flex-end">
-          <div style="flex:1">
-            <label style="font-size:12px;color:var(--text2);font-weight:500;display:block;margin-bottom:5px">Nombre completo</label>
-            <input type="text" id="inicio-nombre" placeholder="Ingresa tu nombre completo..."
-              oninput="onInicioNombreChange()"
-              style="width:100%;font-size:14px;padding:11px 14px;border:2px solid var(--border);border-radius:9px;font-family:Ubuntu,sans-serif;outline:none;transition:.2s">
-          </div>
-          <button id="inicio-nombre-btn" onclick="confirmarNombre()" disabled
-            style="padding:11px 20px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;white-space:nowrap;transition:.2s">
-            Continuar →
-          </button>
-        </div>
-        <div id="inicio-nombre-ok" style="display:none;margin-top:10px">
-          <div style="background:var(--teal-l);border:1px solid rgba(0,176,185,.3);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--teal-d);font-weight:600">
-            ✓ Bienvenido(a), <span id="inicio-nombre-display"></span>. Selecciona el tipo de seguimiento para continuar.
-          </div>
-        </div>
+      <!-- Resultado búsqueda -->
+      <div id="login-resultado" style="min-height:70px;margin-bottom:16px;transition:.3s">
+        <div style="color:var(--text2);font-size:12px;text-align:center;padding:16px 0">Escribe tu usuario para continuar</div>
       </div>
 
-      <!-- TIPO DE SEGUIMIENTO (bloqueado hasta nombre) -->
-      <div id="inicio-tipo-section" style="opacity:.4;pointer-events:none;transition:.3s">
-        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;text-align:center">¿Qué tipo de seguimiento realizarás?</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-          <div onclick="seleccionarModo('coord')" id="inicio-coord"
-            style="border:2px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;cursor:pointer;transition:.25s;background:var(--white);box-shadow:0 1px 4px rgba(0,0,0,.05)">
-            <div style="font-size:38px;margin-bottom:10px">🏢</div>
-            <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:5px">Coordinación</div>
-            <div style="font-size:11px;color:var(--text2);line-height:1.5">KPIs de sede, portafolio, leads, colocación y equipo.</div>
-          </div>
-          <div onclick="seleccionarModo('asesor')" id="inicio-asesor"
-            style="border:2px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;cursor:pointer;transition:.25s;background:var(--white);box-shadow:0 1px 4px rgba(0,0,0,.05)">
-            <div style="font-size:38px;margin-bottom:10px">👤</div>
-            <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:5px">Asesor</div>
-            <div style="font-size:11px;color:var(--text2);line-height:1.5">Leads, negocios, atención, imagen y evaluación 360°.</div>
-          </div>
-        </div>
-        <button id="inicio-continuar" onclick="continuarAHoja1()" disabled
-          style="width:100%;padding:15px;border:none;border-radius:12px;background:#e5e7eb;color:#9ca3af;font-size:15px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;transition:.25s;letter-spacing:.3px">
-          Ir a Hoja 1 — Configurar metas →
-        </button>
-      </div>
+      <!-- Botón ingresar -->
+      <button id="login-btn" onclick="loginIngresar()" disabled
+        style="width:100%;padding:13px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;transition:.3s">
+        Ingresar
+      </button>
+    </div>
 
-      <!-- FOOTER NOTE -->
-      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text2)">
-        Si ya tienes un seguimiento guardado, usa <strong>Importar</strong> en el encabezado para retomarlo directamente.
-      </div>
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:16px;font-size:10px;color:var(--text2)">
+      Proceso Preventa y Venta · Cooperativa Minuto de Dios
     </div>
   </div>
-  <!-- APP CREDIT -->
-  
+</div>
+
+<!-- ═══════════ ETAPA 2: MENÚ ═══════════ -->
+<div id="etapa-menu" style="display:none;min-height:85vh;padding:20px 0">
+
+  <!-- Bienvenida usuario -->
+  <div id="menu-bienvenida" style="background:linear-gradient(135deg,var(--dark),#005a66);border-radius:16px;padding:20px 24px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div id="menu-avatar" style="width:48px;height:48px;background:var(--yellow);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:var(--dark);flex-shrink:0"></div>
+      <div>
+        <div id="menu-nombre" style="color:#fff;font-size:17px;font-weight:700;line-height:1.2"></div>
+        <div id="menu-cargo-sede" style="color:rgba(255,255,255,.6);font-size:11px;margin-top:3px"></div>
+      </div>
+    </div>
+    <button onclick="cerrarSesion()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);border-radius:8px;padding:7px 14px;font-size:11px;cursor:pointer;font-family:Ubuntu,sans-serif;white-space:nowrap">
+      <i class="ti ti-logout" style="font-size:12px"></i> Salir
+    </button>
+  </div>
+
+  <!-- Título -->
+  <div style="font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">¿Qué deseas hacer?</div>
+
+  <!-- Grid principal -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+
+    <div onclick="iniciarSeguimientoCoord()"
+      style="border:2px solid var(--border);border-radius:16px;padding:10px 10px;cursor:pointer;transition:.25s;background:#fff;position:relative;overflow:hidden"
+      onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(0,176,185,.2)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(0,176,185,.08)"></div>
+      <div style="width:36px;height:36px;background:var(--teal-l);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+        <i class="ti ti-building" style="font-size:18px;color:var(--teal-d)"></i>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px">Seguimiento</div>
+      <div style="font-size:11px;font-weight:700;color:var(--teal-d);margin-bottom:6px">Coordinación</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.4">Evalúa KPIs de colocación, portafolio, tiempos y satisfacción.</div>
+      <div style="margin-top:12px;color:var(--teal-d);font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px">
+        <i class="ti ti-arrow-right"></i> Iniciar
+      </div>
+    </div>
+
+    <div onclick="iniciarSeguimientoAsesor()"
+      style="border:2px solid var(--border);border-radius:16px;padding:10px 10px;cursor:pointer;transition:.25s;background:#fff;position:relative;overflow:hidden"
+      onmouseover="this.style.borderColor='var(--dark)';this.style.background='#f8fafc';this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,.1)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(0,61,69,.06)"></div>
+      <div style="width:36px;height:36px;background:#f0f4f8;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+        <i class="ti ti-user" style="font-size:18px;color:var(--dark)"></i>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px">Seguimiento</div>
+      <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:6px">Asesor</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.4">Evalúa leads, atención, negocios e imagen del asesor.</div>
+      <div style="margin-top:12px;color:var(--dark);font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px">
+        <i class="ti ti-arrow-right"></i> Iniciar
+      </div>
+    </div>
+
+    <div onclick="abrirCalculadoraAnticipo()"
+      style="border:2px solid var(--border);border-radius:16px;padding:10px 10px;cursor:pointer;transition:.25s;background:#fff"
+      onmouseover="this.style.borderColor='#16a34a';this.style.background='#f0fdf4';this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(22,163,74,.15)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="width:36px;height:36px;background:#dcfce7;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+        <i class="ti ti-calculator" style="font-size:18px;color:#16a34a"></i>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px">Calculadora</div>
+      <div style="font-size:11px;font-weight:700;color:#16a34a;margin-bottom:6px">Anticipo</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.4">Planea actividades y calcula leads mínimos para el anticipo.</div>
+      <div style="margin-top:12px;color:#16a34a;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px">
+        <i class="ti ti-arrow-right"></i> Abrir
+      </div>
+    </div>
+
+    <div onclick="abrirAppsMenu()"
+      style="border:2px solid var(--border);border-radius:16px;padding:10px 10px;cursor:pointer;transition:.25s;background:#fff"
+      onmouseover="this.style.borderColor='#0891b2';this.style.background='#ecfeff';this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(8,145,178,.15)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="width:36px;height:36px;background:#cffafe;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+        <i class="ti ti-apps" style="font-size:18px;color:#0891b2"></i>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px">Apps</div>
+      <div style="font-size:11px;font-weight:700;color:#0891b2;margin-bottom:6px">Cooperativa</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.4">OnCredit, HubSpot, Talkdesk, Moodle y más sistemas.</div>
+      <div style="margin-top:12px;color:#0891b2;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px">
+        <i class="ti ti-arrow-right"></i> Ver apps
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Botones secundarios -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div onclick="abrirCartaCompromisosMenu()"
+      style="border:1.5px solid var(--border);border-radius:12px;padding:10px 10px;cursor:pointer;text-align:center;background:#fff;transition:.2s"
+      onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+      <i class="ti ti-file-certificate" style="font-size:20px;color:#d97706;display:block;margin-bottom:5px"></i>
+      <div style="font-size:11px;font-weight:700;color:var(--dark)">Cartas de Metas</div>
+    </div>
+    <div onclick="abrirModalCompromisos()"
+      style="border:1.5px solid var(--border);border-radius:12px;padding:10px 10px;cursor:pointer;text-align:center;background:#fff;transition:.2s"
+      onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+      <i class="ti ti-clipboard-text" style="font-size:20px;color:#7c3aed;display:block;margin-bottom:5px"></i>
+      <div style="font-size:11px;font-weight:700;color:var(--dark)">Compromisos</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Legacy compatibility hidden elements -->
+<div style="display:none">
+  <input type="text" id="inicio-nombre">
+  <div id="inicio-nombre-ok"><span id="inicio-nombre-display"></span></div>
+  <div id="inicio-tipo-section">
+    <div id="inicio-coord"></div>
+    <div id="inicio-asesor"></div>
+    <button id="inicio-continuar" disabled></button>
+  </div>
+  <div id="inicio-setup"></div>
+  <input id="inicio-correo">
+  <div id="inicio-sesion-activa"></div>
+  <div id="sesion-avatar"></div>
+  <div id="sesion-nombre"></div>
+  <div id="sesion-cargo-sede"></div>
+  <div id="inicio-nombre-btn"></div>
+  <div id="login-feedback"></div>
+  <div id="login-hint"></div>
+  <div id="inicio-login-btn"></div>
+</div>
+
 </div>
 
 <!-- HOJA 1 -->
@@ -472,7 +593,7 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
   <div class="card" id="card-datos">
     <div class="card-hdr"><div class="cico"><i class="ti ti-building"></i></div><h2>Datos del seguimiento</h2></div>
     <div class="grid2" style="margin-bottom:12px">
-      <div class="field"><label>Rectoría</label><select id="rectoria" onchange="filtrarSedes()"><option value="">— Seleccionar —</option></select></div>
+      <div class="field"><label>Rectoría</label><select id="rectoria" multiple size="4" onchange="filtrarSedes()" style="width:100%;padding:6px 8px;border:1px solid #e5e7eb;border-radius:8px;font-size:12px;font-family:Ubuntu,sans-serif;min-height:80px" title="Ctrl+clic para seleccionar varias"><option value="">— Ctrl+clic para seleccionar varias —</option></select></div>
       <div class="field" id="campo-sede-coord" style="display:none">
         <label>Sede(s) <span style="font-size:10px;color:var(--teal)">(Ctrl+clic para múltiples)</span></label>
         <select id="sede-multi" multiple onchange="onSedesChange()"></select>
@@ -1257,7 +1378,8 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
     <div class="card-hdr"><div class="cico"><i class="ti ti-file-description"></i></div><h2>Generar acta de seguimiento</h2></div>
     <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Acta profesional con membrete institucional Cooperativa Minuto de Dios.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="generarActaPDF()"><i class="ti ti-file-download"></i> Generar acta PDF</button>
+      <button class="btn btn-primary" onclick="abrirActaPrevia()"><i class="ti ti-file-certificate"></i> Generar Acta SG-FR-04</button>
+      <button class="btn" onclick="generarInformePDF()" style="background:#1e40af;color:#fff;border-color:#1e40af"><i class="ti ti-file-analytics"></i> Generar Análisis</button>
       <button class="btn" onclick="exportarDatos()" style="background:var(--dark);color:#fff;border-color:var(--dark)"><i class="ti ti-download"></i> Exportar JSON</button>
       <button class="btn" onclick="exportarExcel()" style="background:#166534;color:#fff;border-color:#166534"><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
       <button class="btn btn-teal" onclick="verPreviewActa()"><i class="ti ti-eye"></i> Vista previa</button>
@@ -1443,9 +1565,10 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
 
 <div class="app-footer" style="text-align:center;padding:16px 20px 10px;border-top:1.5px solid var(--border);margin-top:20px">
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
-    <span style="font-size:10px;color:var(--text2)">© 2026 <strong style="color:var(--dark)">Juan Orrego</strong> · Todos los derechos reservados ®</span>
-    <span style="width:1px;height:14px;background:var(--border);display:inline-block"></span>
     <span style="font-size:10px;color:var(--text2)">Proceso <strong>Preventa y Venta</strong> — Cooperativa Minuto de Dios</span>
+  </div>
+  <div style="margin-top:6px;font-size:9px;color:var(--text2);opacity:.6;text-align:center">
+    © 2026 Juan Orrego · Todos los derechos reservados ®
   </div>
   <div style="margin-top:5px;font-size:9px;color:var(--text2);opacity:.7;letter-spacing:.3px">
     Uso exclusivo interno · Información confidencial · Prohibida su reproducción sin autorización
@@ -1744,7 +1867,16 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
             <div class="field"><label>Sede</label><select id="carta-asesor-sede-sel" onchange="actualizarMetaAsesorCarta()"><option value="">— Seleccionar sede —</option></select></div>
             <div class="field"><label>Cantidad de asesores en sede</label><input type="number" id="carta-asesor-num" value="1" min="1" onchange="actualizarMetaAsesorCarta()"></div>
             <div class="field"><label>Coordinador a cargo</label><input type="text" id="carta-asesor-coord" placeholder="Nombre del coordinador"></div>
-            <div class="field"><label>Nombre del asesor</label><input type="text" id="carta-asesor-nombre" placeholder="Nombre completo"></div>
+            <div class="field">
+              <label>Asesores <span style="font-size:10px;color:var(--text2)">(selecciona hasta 10 — uno a la vez)</span></label>
+              <div id="asesores-seleccionados" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:28px;padding:4px 6px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb">
+                <span style="font-size:11px;color:var(--text2);padding:4px 6px">Ningún asesor seleccionado</span>
+              </div>
+              <div class="emp-selector-wrap">
+                <input type="text" id="carta-asesor-nombre" placeholder="Busca por nombre o sede...">
+              </div>
+              <div style="font-size:10px;color:var(--text2);margin-top:4px">Se generará una carta por cada asesor en un solo PDF</div>
+            </div>
             <div class="field"><label>Cargo</label><input type="text" id="carta-asesor-cargo" value="Asesor Comercial"></div>
           </div>
           <div style="font-size:11px;font-weight:700;color:var(--dark);margin:8px 0 6px">Meta individual del asesor <span style="font-size:10px;color:var(--teal);font-weight:400">(se calcula automáticamente al seleccionar sede y N° asesores)</span></div>
@@ -1782,6 +1914,774 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
 
 
 <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var EMPLEADOS_BD = {
+  "martha.agredo@coopminutodedios.com": {
+    "nombre": "Agredo Fernandez Martha Isabel",
+    "sede": "Popayan",
+    "cargo": "Coordinador Comercial",
+    "cedula": "34564609",
+    "correo": "martha.agredo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "rafael.agudelo@coopminutodedios.com": {
+    "nombre": "Agudelo Agudelo Rafael Ernesto",
+    "sede": "Funza",
+    "cargo": "Asesor Comercial",
+    "cedula": "1073521512",
+    "correo": "rafael.agudelo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yenny.alfonso@coopminutodedios.com": {
+    "nombre": "Alfonso Bolaños Yenny Adriana",
+    "sede": "Lerida",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1109382766",
+    "correo": "yenny.alfonso@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "andrea.alvarado@coopminutodedios.com": {
+    "nombre": "Alvarado Niño Andrea Milena",
+    "sede": "Cucuta",
+    "cargo": "Asesor Comercial",
+    "cedula": "37395349",
+    "correo": "andrea.alvarado@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "lady.arevalo@coopminutodedios.com": {
+    "nombre": "Arevalo Pachon Lady Tatiana",
+    "sede": "Zipaquira",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1075663825",
+    "correo": "lady.arevalo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "angie.ariza@coopminutodedios.com": {
+    "nombre": "Ariza Benitez Angie Katherine",
+    "sede": "Bogota",
+    "cargo": "Formadora Comercial",
+    "cedula": "1012451627",
+    "correo": "angie.ariza@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "luisa.arrunategui@coopminutodedios.com": {
+    "nombre": "Arrunategui Ortiz Luisa Fernanda",
+    "sede": "Buenaventura",
+    "cargo": "Asesor Comercial",
+    "cedula": "1144144537",
+    "correo": "luisa.arrunategui@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "milena.azcarate@coopminutodedios.com": {
+    "nombre": "Azcarate Ossa Alba Milena",
+    "sede": "Bogota",
+    "cargo": "Subdirectora Comercial",
+    "cedula": "52068575",
+    "correo": "milena.azcarate@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "deisy.barco@coopminutodedios.com": {
+    "nombre": "Barco Salcedo Deyci Alejandra",
+    "sede": "Girardot",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1070594436",
+    "correo": "deisy.barco@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "daniela.barreto@coopminutodedios.com": {
+    "nombre": "Barreto Riaños Daniela Camila",
+    "sede": "Ibague",
+    "cargo": "Asesor Comercial",
+    "cedula": "1110589407",
+    "correo": "daniela.barreto@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "laura.beltran@coopminutodedios.com": {
+    "nombre": "Beltran Castro Laura Daniela",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1030700208",
+    "correo": "laura.beltran@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "geraldine.bermudez@coopminutodedios.com": {
+    "nombre": "Bermudez Buitrago Geraldine",
+    "sede": "Santa Marta",
+    "cargo": "Asesor Comercial",
+    "cedula": "1006526927",
+    "correo": "geraldine.bermudez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "nidia.betancourt@coopminutodedios.com": {
+    "nombre": "Betancourt Vasquez Nidia Constanza",
+    "sede": "Neiva",
+    "cargo": "Asesor Comercial",
+    "cedula": "1075228339",
+    "correo": "nidia.betancourt@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "juan.bonilla@coopminutodedios.com": {
+    "nombre": "Bonilla Gonzalez Juan David",
+    "sede": "Villavicencio",
+    "cargo": "Asesor Comercial",
+    "cedula": "1122508114",
+    "correo": "juan.bonilla@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "karoline.borrero@coopminutodedios.com": {
+    "nombre": "Borrero Quiroga Karoline Natalia",
+    "sede": "Soacha",
+    "cargo": "Asesor Comercial",
+    "cedula": "1003749864",
+    "correo": "karoline.borrero@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "nathalia.cardona@coopminutodedios.com": {
+    "nombre": "Cardona Osorio Nathalia",
+    "sede": "Bello",
+    "cargo": "Asesor Comercial",
+    "cedula": "1214730347",
+    "correo": "nathalia.cardona@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "nalleivy.cardona@coopminutodedios.com": {
+    "nombre": "Cardona Sarmiento Nalleivy",
+    "sede": "Soacha",
+    "cargo": "Coordinador Comercial",
+    "cedula": "41960743",
+    "correo": "nalleivy.cardona@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "diego.carranza@coopminutodedios.com": {
+    "nombre": "Carranza Palomino Diego Alejandro",
+    "sede": "Bogota",
+    "cargo": "Analista Comercial",
+    "cedula": "1014302498",
+    "correo": "diego.carranza@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jean.castano@coopminutodedios.com": {
+    "nombre": "Castaño Ruiz Jean Poul.",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1024488608",
+    "correo": "jean.castano@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "coor.comercialp@coopminutodedios.com": {
+    "nombre": "Castellanos Mora Alix Marcela",
+    "sede": "Pereira",
+    "cargo": "Coordinador Comercial",
+    "cedula": "27601125",
+    "correo": "coor.comercialp@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "alexander.castro@coopminutodedios.com": {
+    "nombre": "Castro Ardila Alexander",
+    "sede": "Bogota",
+    "cargo": "Director Consumo",
+    "cedula": "1121824817",
+    "correo": "alexander.castro@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "hamilton.chavez@coopminutodedios.com": {
+    "nombre": "Chaves Vargas Hamilton Steek",
+    "sede": "Bogota",
+    "cargo": "Asesor Consumo",
+    "cedula": "1023303517",
+    "correo": "hamilton.chavez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jonathan.colmenares@coopminutodedios.com": {
+    "nombre": "Colmenares Deossa Jonathan Manuel",
+    "sede": "Bello",
+    "cargo": "Asesor Comercial",
+    "cedula": "1007029650",
+    "correo": "jonathan.colmenares@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "angie.contreras@coopminutodedios.com": {
+    "nombre": "Contreras Ortiz Angie Daniela",
+    "sede": "Lerida",
+    "cargo": "Asesor Comercial",
+    "cedula": "1109387558",
+    "correo": "angie.contreras@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jorge.cruz@coopminutodedios.com": {
+    "nombre": "Cruz Mateus Jorge Eliecer",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "80157133",
+    "correo": "jorge.cruz@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "sandra.cuevas@coopminutodedios.com": {
+    "nombre": "Cuevas Rodriguez Sandra",
+    "sede": "Bucaramanga",
+    "cargo": "Coordinador Comercial",
+    "cedula": "52322601",
+    "correo": "sandra.cuevas@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yara.diaz@coopminutodedios.com": {
+    "nombre": "Diaz Julio Yara Liney",
+    "sede": "Apartado",
+    "cargo": "Asesor Comercial",
+    "cedula": "1045517843",
+    "correo": "yara.diaz@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "davey.figueredo@coopminutodedios.com": {
+    "nombre": "Figueredo Diaz Davey Lorena",
+    "sede": "Villavicencio",
+    "cargo": "Asesor Comercial",
+    "cedula": "1121878028",
+    "correo": "davey.figueredo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "lucero.figueroa@coopminutodedios.com": {
+    "nombre": "Figueroa Escobar Lucero Alcira",
+    "sede": "Pasto",
+    "cargo": "Asesor Comercial",
+    "cedula": "59795865",
+    "correo": "lucero.figueroa@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "durley.figueroa@coopminutodedios.com": {
+    "nombre": "Figueroa Merchan Durley Eduardo",
+    "sede": "Bogota Sur",
+    "cargo": "Asesor Comercial",
+    "cedula": "1000214243",
+    "correo": "durley.figueroa@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "danny.franco@coopminutodedios.com": {
+    "nombre": "Franco Aranda Danny Alejandro",
+    "sede": "Ibague",
+    "cargo": "Asesor Comercial",
+    "cedula": "1110558509",
+    "correo": "danny.franco@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "andrea.gaitan@coopminutodedios.com": {
+    "nombre": "Gaitan Ospina Andrea Del Pilar",
+    "sede": "Ibague",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1110466579",
+    "correo": "andrea.gaitan@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "elena.gomez@coopminutodedios.com": {
+    "nombre": "Gomez Franco Elena",
+    "sede": "Ternera",
+    "cargo": "Subdirectora Comercial",
+    "cedula": "45515216",
+    "correo": "elena.gomez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "paula.gonzalez@coopminutodedios.com": {
+    "nombre": "Gonzalez Martinez Paula Daniela",
+    "sede": "Bogota",
+    "cargo": "Asesor Consumo",
+    "cedula": "1000366224",
+    "correo": "paula.gonzalez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "juan.gonzalez@coopminutodedios.com": {
+    "nombre": "Gonzalez Villadiego Juan Jose",
+    "sede": "Otras Ies",
+    "cargo": "Asesor Comercial",
+    "cedula": "1014264134",
+    "correo": "juan.gonzalez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "erwin.guerrero@coopminutodedios.com": {
+    "nombre": "Guerrero Acosta Erwin Marcelo",
+    "sede": "Pasto",
+    "cargo": "Asesor Comercial",
+    "cedula": "1085260668",
+    "correo": "erwin.guerrero@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "rony.hernandez@coopminutodedios.com": {
+    "nombre": "Hernandez Barrios Rony Duvan",
+    "sede": "Bogota Sur",
+    "cargo": "Asesor Comercial",
+    "cedula": "1012445595",
+    "correo": "rony.hernandez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "valentina.hernandez@coopminutodedios.com": {
+    "nombre": "Hernandez Cajigas Valentina",
+    "sede": "Unicatolica",
+    "cargo": "Asesor Comercial",
+    "cedula": "1112497152",
+    "correo": "valentina.hernandez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "juan.hernandez@coopminutodedios.com": {
+    "nombre": "Hernandez Lozano Juan Camilo",
+    "sede": "Villeta",
+    "cargo": "Asesor Comercial",
+    "cedula": "1193091594",
+    "correo": "juan.hernandez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "nathalia.herrera@coopminutodedios.com": {
+    "nombre": "Herrera Jaramillo Nathalia",
+    "sede": "Chinchina",
+    "cargo": "Asesor Comercial",
+    "cedula": "1054987814",
+    "correo": "nathalia.herrera@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "leidy.hincapie@coopminutodedios.com": {
+    "nombre": "Hincapie Bonilla Leidy Liliana",
+    "sede": "Villavicencio",
+    "cargo": "Coordinador Comercial",
+    "cedula": "40187244",
+    "correo": "leidy.hincapie@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yessica.jaramillo@coopminutodedios.com": {
+    "nombre": "Jaramillo Ortiz Yessica Maryuris",
+    "sede": "El Bagre",
+    "cargo": "Asesor Comercial",
+    "cedula": "1007578461",
+    "correo": "yessica.jaramillo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "maryuri.jaramillo@coopminutodedios.com": {
+    "nombre": "Jaramillo Santos Maryuri",
+    "sede": "Cali Unicatolica",
+    "cargo": "Asesor Comercial",
+    "cedula": "1112105257",
+    "correo": "maryuri.jaramillo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "daniel.jimenez@coopminutodedios.com": {
+    "nombre": "Jimenez Calderon Jose Daniel",
+    "sede": "Ibague",
+    "cargo": "Asesor Comercial",
+    "cedula": "1110547060",
+    "correo": "daniel.jimenez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "nathaly.jimenez@coopminutodedios.com": {
+    "nombre": "Jimenez Vergara Nathaly",
+    "sede": "Pereira",
+    "cargo": "Asesor Comercial",
+    "cedula": "1088345694",
+    "correo": "nathaly.jimenez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "paola.jordan@coopminutodedios.com": {
+    "nombre": "Jordan Medina Paola Andrea",
+    "sede": "Santander De Quilichao",
+    "cargo": "Asesor Comercial",
+    "cedula": "1061434195",
+    "correo": "paola.jordan@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "luis.latorre@coopminutodedios.com": {
+    "nombre": "Latorre Molina Luis Felipe",
+    "sede": "Buga",
+    "cargo": "Asesor Comercial",
+    "cedula": "1115079132",
+    "correo": "luis.latorre@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "maryi.guzman@coopminutodedios.com": {
+    "nombre": "Lebaza Guzman Maryi Lizeth",
+    "sede": "Popayan",
+    "cargo": "Asesor Comercial",
+    "cedula": "1061797825",
+    "correo": "maryi.guzman@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "belkis.lopez@coopminutodedios.com": {
+    "nombre": "Lopez Gil Belkis Del Socorro",
+    "sede": "Cartagena - Manga Utb",
+    "cargo": "Asesor Comercial",
+    "cedula": "55245945",
+    "correo": "belkis.lopez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "skarleen.lopez@coopminutodedios.com": {
+    "nombre": "Lopez Tapia Skarleen Carolina",
+    "sede": "Barranquilla",
+    "cargo": "Asesor Comercial",
+    "cedula": "1045717577",
+    "correo": "skarleen.lopez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "marly.malvaceda@coopminutodedios.com": {
+    "nombre": "Malvaceda Diaz Marly",
+    "sede": "Ternera",
+    "cargo": "Asesor Comercial",
+    "cedula": "1143338801",
+    "correo": "marly.malvaceda@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jose.marquez@coopminutodedios.com": {
+    "nombre": "Marquez Bazurto Jose Luis",
+    "sede": "Girardot",
+    "cargo": "Asesor Comercial",
+    "cedula": "1070621430",
+    "correo": "jose.marquez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jennifer.marin@coopminutodedios.com": {
+    "nombre": "Marin Agredo Jennifer Paola",
+    "sede": "La Dorada",
+    "cargo": "Asesor Comercial",
+    "cedula": "1054550704",
+    "correo": "jennifer.marin@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "lisbeth.martinez@coopminutodedios.com": {
+    "nombre": "Martinez Lopez Lisbeth Gabriela",
+    "sede": "Bogota",
+    "cargo": "Analista Comercial",
+    "cedula": "1007912303",
+    "correo": "lisbeth.martinez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "luisa.medina@coopminutodedios.com": {
+    "nombre": "Medina Cuellar Luisa Fernanda",
+    "sede": "Pitalito",
+    "cargo": "Asesor Comercial",
+    "cedula": "1080935402",
+    "correo": "luisa.medina@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "sebastian.melo@coopminutodedios.com": {
+    "nombre": "Melo Quitian Sebastian",
+    "sede": "Buga",
+    "cargo": "Asesor Comercial",
+    "cedula": "1115087538",
+    "correo": "sebastian.melo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "diana.miranda@coopminutodedios.com": {
+    "nombre": "Miranda Delgado Diana Marcela",
+    "sede": "Pasto",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1085290920",
+    "correo": "diana.miranda@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yineth.moreno@coopminutodedios.com": {
+    "nombre": "Moreno Gonzalez Yineth",
+    "sede": "Buenaventura",
+    "cargo": "Asesor Comercial",
+    "cedula": "1143931785",
+    "correo": "yineth.moreno@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "laura.murcia@coopminutodedios.com": {
+    "nombre": "Murcia Cruz Laura Stepfany",
+    "sede": "Facatativa",
+    "cargo": "Asesor Comercial",
+    "cedula": "1070963567",
+    "correo": "laura.murcia@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "karen.nino@coopminutodedios.com": {
+    "nombre": "Niño Campo Karen Dayana",
+    "sede": "Barranquilla",
+    "cargo": "Asesor Comercial",
+    "cedula": "1129491124",
+    "correo": "karen.nino@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "johan.nino@coopminutodedios.com": {
+    "nombre": "Niño Perez Johan Alberto",
+    "sede": "Bogota",
+    "cargo": "Aprendiz Comercial",
+    "cedula": "1018491134",
+    "correo": "johan.nino@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yennifer.ochoa@coopminutodedios.com": {
+    "nombre": "Ochoa De Avila Yennifer",
+    "sede": "Rafael Nuñez",
+    "cargo": "Asesor Comercial",
+    "cedula": "1050954773",
+    "correo": "yennifer.ochoa@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "astrid.ochoa@coopminutodedios.com": {
+    "nombre": "Ochoa Ochoa Astrid Carolina",
+    "sede": "Cucuta",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1093768319",
+    "correo": "astrid.ochoa@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "juan.orrego@coopminutodedios.com": {
+    "nombre": "Orrego Mejia Juan Bernardo",
+    "sede": "Bello",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1038213114",
+    "correo": "juan.orrego@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "stefany.paez@coopminutodedios.com": {
+    "nombre": "Paez Sandoval Stefany Andrea",
+    "sede": "Bucaramanga",
+    "cargo": "Asesor Comercial",
+    "cedula": "1102371757",
+    "correo": "stefany.paez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yuly.perdomo@coopminutodedios.com": {
+    "nombre": "Perdomo Barreto Yuly Paola",
+    "sede": "Neiva",
+    "cargo": "Analista Lider",
+    "cedula": "1003688392",
+    "correo": "yuly.perdomo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yury.perez@coopminutodedios.com": {
+    "nombre": "Perez Restrepo Yury Marcela",
+    "sede": "Cali Unicatolica",
+    "cargo": "Analista Lider",
+    "cedula": "1144143492",
+    "correo": "yury.perez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "isabel.patino@coopminutodedios.com": {
+    "nombre": "Patiño Mahecha Isabel",
+    "sede": "Bello",
+    "cargo": "Asesor Comercial",
+    "cedula": "1128283569",
+    "correo": "isabel.patino@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "adriana.poveda@coopminutodedios.com": {
+    "nombre": "Poveda Sanchez Adriana",
+    "sede": "Bogota Sur",
+    "cargo": "Coordinador Consumo",
+    "cedula": "52075506",
+    "correo": "adriana.poveda@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "analistadeconsumo@coopminutodedios.com": {
+    "nombre": "Quintero Barreto Yeferson Daniel",
+    "sede": "Bogota",
+    "cargo": "Analista Consumo",
+    "cedula": "1007391887",
+    "correo": "analistadeconsumo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yailin.rangel@coopminutodedios.com": {
+    "nombre": "Rangel Gonzalez Yailin Vanessa",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1004506762",
+    "correo": "yailin.rangel@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "john.rengifo@coopminutodedios.com": {
+    "nombre": "Rengifo Onatra John Henry",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1012385396",
+    "correo": "john.rengifo@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jennifer.reyes@coopminutodedios.com": {
+    "nombre": "Reyes Leyton Jennifer",
+    "sede": "Soacha",
+    "cargo": "Asesor Comercial",
+    "cedula": "1018500235",
+    "correo": "jennifer.reyes@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "maria.rios@coopminutodedios.com": {
+    "nombre": "Rios Diaz Maria Fernanda",
+    "sede": "Bogota",
+    "cargo": "Asesor Consumo",
+    "cedula": "1010228713",
+    "correo": "maria.rios@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "cristian.rivera@coopminutodedios.com": {
+    "nombre": "Rivera Ruiz Cristian Fernando",
+    "sede": "Popayan",
+    "cargo": "Asesor Comercial",
+    "cedula": "1061768026",
+    "correo": "cristian.rivera@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "paola.rodriguez@coopminutodedios.com": {
+    "nombre": "Rodriguez Claros Paola Andrea",
+    "sede": "Cali Umd",
+    "cargo": "Coordinador Comercial",
+    "cedula": "1107042489",
+    "correo": "paola.rodriguez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "jairo.rodriguez@coopminutodedios.com": {
+    "nombre": "Rodriguez Ducuara Jairo Antonio",
+    "sede": "San Francisco",
+    "cargo": "Asesor Rol Seguimiento",
+    "cedula": "1022983549",
+    "correo": "jairo.rodriguez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yanid.ruiz@coopminutodedios.com": {
+    "nombre": "Ruiz Pedroza Yanid",
+    "sede": "Neiva",
+    "cargo": "Asesor Comercial",
+    "cedula": "1075257719",
+    "correo": "yanid.ruiz@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "julie.salgar@coopminutodedios.com": {
+    "nombre": "Salgar Pastran Julie Vannessa",
+    "sede": "Bogota",
+    "cargo": "Director Educativo",
+    "cedula": "52977286",
+    "correo": "julie.salgar@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "orlys.solano@coopminutodedios.com": {
+    "nombre": "Solano Hoyos Orlydes",
+    "sede": "Apartado",
+    "cargo": "Coordinador Comercial",
+    "cedula": "39428775",
+    "correo": "orlys.solano@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "leidy.suarez@coopminutodedios.com": {
+    "nombre": "Suarez Garavito Leidy Nataly",
+    "sede": "Zipaquira",
+    "cargo": "Asesor Comercial",
+    "cedula": "1075675568",
+    "correo": "leidy.suarez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "marlady.taborda@coopminutodedios.com": {
+    "nombre": "Taborda Cruz Marlady Indira",
+    "sede": "Cali Unicatolica",
+    "cargo": "Asesor Comercial",
+    "cedula": "1059709826",
+    "correo": "marlady.taborda@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "carolina.tapiero@coopminutodedios.com": {
+    "nombre": "Tapiero Tapiero Carolina",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1105062267",
+    "correo": "carolina.tapiero@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "janeire.tovar@coopminutodedios.com": {
+    "nombre": "Tovar Monterrosa Janeire Mahut",
+    "sede": "Tecnologico Comfenalco",
+    "cargo": "Analista Comercial",
+    "cedula": "45529947",
+    "correo": "janeire.tovar@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yesika.triana@coopminutodedios.com": {
+    "nombre": "Triana Molina Yesika Daniela",
+    "sede": "Villavicencio",
+    "cargo": "Asesor Comercial",
+    "cedula": "1121932623",
+    "correo": "yesika.triana@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yennifer.trochez@coopminutodedios.com": {
+    "nombre": "Trochez Calderon Yennifer",
+    "sede": "Garzon",
+    "cargo": "Asesor Comercial",
+    "cedula": "1080937514",
+    "correo": "yennifer.trochez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "juleidy.vanegas@coopminutodedios.com": {
+    "nombre": "Vanegas Gaitan Juleidy",
+    "sede": "Bogota",
+    "cargo": "Asesor Consumo",
+    "cedula": "1030541536",
+    "correo": "juleidy.vanegas@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "tatiana.vega@coopminutodedios.com": {
+    "nombre": "Vega Mendez Leidy Tatiana",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1122732330",
+    "correo": "tatiana.vega@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "laura.velasquez@coopminutodedios.com": {
+    "nombre": "Velasquez Oliveros Laura Daniela",
+    "sede": "Villavicencio",
+    "cargo": "Asesor Comercial",
+    "cedula": "1121908369",
+    "correo": "laura.velasquez@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "marlen.vergara@coopminutodedios.com": {
+    "nombre": "Vergara Rios Marlen Daniela",
+    "sede": "Apartado",
+    "cargo": "Asesor Comercial",
+    "cedula": "1028008923",
+    "correo": "marlen.vergara@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "yesid.villamil@coopminutodedios.com": {
+    "nombre": "Villamil Avendaño Yesid Alexander",
+    "sede": "Bogota",
+    "cargo": "Asesor Comercial",
+    "cedula": "1053326578",
+    "correo": "yesid.villamil@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "luisa.zabala@coopminutodedios.com": {
+    "nombre": "Zabala Barrios Luisa Fernanda",
+    "sede": "Girardot",
+    "cargo": "Asesor Comercial",
+    "cedula": "1070599056",
+    "correo": "luisa.zabala@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  },
+  "diego.zapata@coopminutodedios.com": {
+    "nombre": "Zapata Montañez Diego Andres",
+    "sede": "Bucaramanga",
+    "cargo": "Asesor Comercial",
+    "cedula": "80858873",
+    "correo": "diego.zapata@coopminutodedios.com",
+    "subproceso": "COMERCIAL"
+  }
+};
+
+
+
+
+
 
 
 
@@ -1845,6 +2745,10 @@ function getTotalGlobal(mes){
 // ============================================================
 var navState = {
   nombreEjecutor: '',
+  correoEjecutor: '',
+  cargoEjecutor: '',
+  sedeEjecutor: '',
+  cedulaEjecutor: '',
   modoSeleccionado: null,
   h0Completada: false,
   h1Guardada: false,
@@ -1934,6 +2838,25 @@ function init(){
   var fseg=document.getElementById('fecha-seg');
   if(fseg) fseg.valueAsDate=now;
   setTimeout(applyNavState, 180); // after cargarLS's 120ms timeout
+  // Show correct etapa on start
+  initEmpSelectors();
+  setTimeout(function(){
+    if(sesionActiva || navState.nombreEjecutor){
+      // Restore session UI
+      var correo = navState.correoEjecutor||'';
+      var emp = correo ? EMPLEADOS_BD[correo] : null;
+      if(emp){
+        sesionActiva = {correo:correo, nombre:emp.nombre, cargo:emp.cargo, sede:emp.sede, cedula:emp.cedula};
+        var av=document.getElementById('menu-avatar');
+        var mn=document.getElementById('menu-nombre');
+        var mc=document.getElementById('menu-cargo-sede');
+        var initials=emp.nombre.split(' ').filter(function(p){return p.length>2;}).slice(0,2).map(function(p){return p[0].toUpperCase();}).join('');
+        if(av)av.textContent=initials; if(mn)mn.textContent=emp.nombre;
+        if(mc)mc.textContent=emp.cargo+' · '+emp.sede;
+        irEtapaMenu();
+      } else { irEtapaLogin(); }
+    } else { irEtapaLogin(); }
+  }, 250);
   setTimeout(cargarLogoInicio, 200);
 }
 
@@ -1965,10 +2888,26 @@ function filtrarSedes(){
   var sm=document.getElementById('sede-multi');
   var ss=document.getElementById('sede-single');
   if(!rEl||!sm||!ss) return;
-  var r=rEl.value;
+  // Support multi-select
+  var selectedOpts = Array.from(rEl.selectedOptions||[]).map(function(o){return o.value;}).filter(Boolean);
+  var r = selectedOpts.length===1 ? selectedOpts[0] : (selectedOpts.length>1 ? '__multi__' : '');
+  // Build combined sedes list
+  var allSedes = [];
+  if(selectedOpts.length>0){
+    selectedOpts.forEach(function(rect){
+      if(RECTORIAS[rect]) allSedes = allSedes.concat(RECTORIAS[rect]);
+    });
+  } else if(r&&RECTORIAS[r]){
+    allSedes = RECTORIAS[r];
+  }
   sm.innerHTML='';ss.innerHTML='<option value="">— Seleccionar sede —</option>';
-  if(r&&RECTORIAS[r]){
-    RECTORIAS[r].forEach(sd=>{
+  if(allSedes.length>0){
+    allSedes.forEach(function(sd){
+      var o1=document.createElement('option');o1.value=sd;o1.textContent=sd;sm.appendChild(o1);
+      var o2=document.createElement('option');o2.value=sd;o2.textContent=sd;ss.appendChild(o2);
+    });
+  } else if(r&&RECTORIAS[r]){
+    RECTORIAS[r].forEach(function(sd){
       var o1=document.createElement('option');o1.value=sd;o1.textContent=sd;sm.appendChild(o1);
       var o2=document.createElement('option');o2.value=sd;o2.textContent=sd;ss.appendChild(o2);
     });
@@ -3239,543 +4178,226 @@ function getSedesLabel(){return (state.sedes||[]).join(', ')||'—';}
 // Images loaded from global vars
 
 function generarActaPDF(){
-  if(typeof window.jspdf==='undefined'){alert('Cargando PDF, intenta de nuevo.');return;}
-  var{jsPDF}=window.jspdf;
-  var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  var pW=doc.internal.pageSize.width;
-  var pH=doc.internal.pageSize.height;
-  var margin=20;
-  var contentW=pW-margin*2;
+  if(typeof window.jspdf==='undefined'){mostrarAlertaNav('Cargando PDF...');return;}
+  var jsPDF2=window.jspdf.jsPDF;
+  var doc=new jsPDF2({orientation:'portrait',unit:'mm',format:'letter'});
+  var pW=doc.internal.pageSize.width,pH=doc.internal.pageSize.height;
+  var mL=19,mR=19,cW=pW-mL-mR;
+  var d=getActaData();
+  var ejecutor=navState.nombreEjecutor||'---';
+  var cargo=navState.cargoEjecutor||'---';
+  var sede=(state.sedes||[]).join(', ')||navState.sedeEjecutor||'---';
+  var mes=state.mes||'---',anio=state.anio||'2026';
+  var modoLabel=mode==='coord'?'Coordinación':'Asesor';
 
-  // ── MANUAL DE IDENTIDAD: colores institucionales ──────────────
-  var C_TEAL=[0,176,185];
-  var C_YELLOW=[255,217,0];
-  var C_GREEN=[174,201,0];
-  var C_DARK=[0,61,69];
-  var C_PURPLE=[129,56,140];
-  var C_GRAY=[113,115,114];
-
-  // Draws full-page background following CMD identity manual
-  function drawPageBg(){
-    // ── FONDO BLANCO base
-    doc.setFillColor(255,255,255);
-    doc.rect(0,0,pW,pH,'F');
-
-    // ── ESQUINA SUPERIOR IZQUIERDA: forma teal curva (estilo intersección)
-    doc.setFillColor(0,176,185);
-    doc.rect(0,0,pW*0.38,24,'F');
-    // Óvalo grande superpuesto arriba-izq (intersección del manual)
-    doc.setFillColor(0,176,185);
-    doc.ellipse(pW*0.22,0,pW*0.22,22,'F');
-    // Óvalo amarillo interseccionado arriba-izq
-    doc.setFillColor(255,217,0);
-    doc.ellipse(pW*0.38,0,18,18,'F');
-
-    // ── BANDA DIAGONAL SUAVE: franja verde-lima en esquina sup-der
-    doc.setFillColor(174,201,0);
-    doc.ellipse(pW,0,28,28,'F');
-
-    // ── MARCA DE AGUA: repetición del logo en texto muy claro
-    doc.setTextColor(240,250,251);
-    doc.setFontSize(6.5);
-    doc.setFont('times','italic');
-    for(var row=0;row<25;row++){
-      for(var col=0;col<6;col++){
-        doc.text('Cooperativa  MD',10+col*35,28+row*11);
-      }
-    }
-    doc.setTextColor(0,0,0);
-
-    // ── ESQUINA INFERIOR DERECHA: intersección amarillo + verde (manual)
-    // Óvalo amarillo grande
-    doc.setFillColor(255,217,0);
-    doc.ellipse(pW,pH,38,38,'F');
-    // Óvalo verde superpuesto (intersección)
-    doc.setFillColor(174,201,0);
-    doc.ellipse(pW-18,pH,24,28,'F');
-    // Óvalo teal interseccionado
-    doc.setFillColor(0,176,185);
-    doc.ellipse(pW,pH-22,20,20,'F');
-
-    // ── ESQUINA INFERIOR IZQUIERDA: acento púrpura sutil
-    doc.setFillColor(129,56,140);
-    doc.ellipse(0,pH,18,14,'F');
-
-    // ── FRANJA PIE: tricolor institucional
-    doc.setFillColor(0,176,185);  doc.rect(0,pH-7,pW*0.6,7,'F');
-    doc.setFillColor(255,217,0);doc.rect(pW*0.6,pH-7,pW*0.2,7,'F');
-    doc.setFillColor(174,201,0); doc.rect(pW*0.8,pH-7,pW*0.2,7,'F');
-
-    // ── LÍNEA DECORATIVA LATERAL IZQUIERDA: borde teal fino
-    doc.setDrawColor(0,176,185);
-    doc.setLineWidth(1.5);
-    doc.line(8,28,8,pH-10);
-    doc.setLineWidth(0.3);
-  }
-
-  // Draws the top header area with logo and title space
+  // ── HEADER SG-FR-04 ──
   function drawPageHeader(){
-    drawPageBg();
-    // Logo area top-right (sobre el fondo claro)
-    try{doc.addImage(LOGO_B64,'PNG',pW-66,2,56,16);}catch(e){}
+    var hY=10;
+    // Logo box (left)
+    doc.setDrawColor(0,0,0);doc.setLineWidth(0.3);
+    doc.rect(mL,hY,32,28);
+    try{doc.addImage(LOGO_B64,'PNG',mL+1,hY+2,30,22);}catch(e){
+      doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(0,61,69);
+      doc.text('CMD',mL+10,hY+16);
+    }
+    // Center title
+    doc.rect(mL+32,hY,cW-52,28);
+    doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(0,0,0);
+    doc.text('ACTA DE REUNIÓN',mL+32+(cW-52)/2,hY+17,{align:'center'});
+    // Right info box
+    var rx=mL+cW-20;
+    doc.rect(rx,hY,20,7);doc.rect(rx,hY+7,20,7);doc.rect(rx,hY+14,20,7);doc.rect(rx,hY+21,20,7);
+    doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(0,0,0);
+    doc.text('Código',rx+1,hY+3.5);doc.setFont('helvetica','normal');doc.text('SG-FR-04',rx+1,hY+6.2);
+    doc.setFont('helvetica','bold');doc.text('Versión',rx+1,hY+10.5);doc.setFont('helvetica','normal');doc.text('08',rx+1,hY+13.2);
+    doc.setFont('helvetica','bold');doc.text('Fecha',rx+1,hY+17.5);doc.setFont('helvetica','normal');doc.text('22-Ene-2018',rx+1,hY+20.2);
+    doc.setFont('helvetica','bold');doc.text('Página',rx+1,hY+24.5);doc.setFont('helvetica','normal');doc.text(String(doc.getCurrentPageInfo().pageNumber)+' de X',rx+1,hY+27.2);
   }
 
-  function addHeader(){
-    drawPageHeader();
+  function sTitle(y,txt){
+    doc.setFillColor(200,215,225);doc.rect(mL,y,cW,6,'FD');
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(0,0,0);
+    doc.text(txt,mL+2,y+4.3);
+    return y+6;
   }
 
-  function newPage(){
-    doc.addPage();
-    drawPageBg();
-    try{doc.addImage(LOGO_B64,'PNG',pW-66,2,56,16);}catch(e){}
-    _rowAlt=0;
-    return 28;
+  function cell(x,y,w,h,lbl,val,lblBold){
+    doc.setDrawColor(0,0,0);doc.setLineWidth(0.2);doc.rect(x,y,w,h);
+    if(lbl){
+      doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(0,0,0);
+      doc.text(lbl,x+1.5,y+3.5);
+    }
+    if(val!==undefined&&val!==''){
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(0,0,0);
+      var lines=doc.splitTextToSize(String(val),w-3);
+      doc.text(lines,x+1.5,y+(lbl?6.5:4));
+    }
   }
 
-  var y=28;
-  // PAGE 1
-  drawPageBg();
-  try{doc.addImage(LOGO_B64,'PNG',pW-66,2,56,16);}catch(e){}
+  function checkY2(y,need){
+    if(y+need>pH-20){doc.addPage();drawPageHeader();return 44;}
+    return y;
+  }
 
-    // Title panel
-  doc.setFillColor(0,61,69);
-  doc.roundedRect(margin,y,contentW,20,3,3,'F');
-  doc.setFillColor(0,176,185);
-  doc.roundedRect(margin,y,6,20,2,2,'F');
-  doc.setFont('times','bold');doc.setFontSize(13);doc.setTextColor(255,255,255);
-  doc.text('ACTA DE SEGUIMIENTO COMERCIAL',pW/2,y+8,{align:'center'});
-  doc.setFont('times','italic');doc.setFontSize(8.5);doc.setTextColor(255,217,0);
-  var modeLabel=mode==='coord'?'Proceso PYV Comercial - Coordinacion':'Proceso PYV Comercial - Asesor';
-  doc.text(modeLabel,pW/2,y+15,{align:'center'});
-  y+=26;
-  doc.setDrawColor(0,176,185);doc.setLineWidth(0.8);doc.line(margin,y,pW-margin,y);
-  doc.setLineWidth(0.3);
-  y+=5;
+  // ── PAGE 1 ──
+  drawPageHeader();
+  var y=42;
 
-  // Info table
-  var s=state;var seg=state.seguimiento;
-  var infoRows=mode==='coord'?[
-    ['Sede(s)',getSedesLabel()],
-    ['Rectoria',s.rectoria||'—'],
-    ['Periodo',String(s.mes||'—')+' '+String(s.anio||'')],
-    ['Fecha del seguimiento',s.fechaSeg||'—'],
-    ['Coordinador',s.coordinador||'—'],
-    ['Ejecuta el seguimiento',s.ejecutor||navState.nombreEjecutor||'—'],
-    ['Hora inicio del seguimiento',fmtDateTime(navState.horaInicio)],
-    ['Hora fin / cierre',fmtDateTime(navState.horaFin)||'En curso'],
-    ['Generacion del acta',new Date().toLocaleString('es-CO')],
-  ]:[
-    ['Asesor',s.asesor_nombre||'—'],
-    ['Cargo',s.asesor_cargo||'—'],
-    ['Antiguedad',s.asesor_antiguedad||'—'],
-    ['Sede',getSedesLabel()],
-    ['Coordinador a cargo',s.asesor_coord||'—'],
-    ['Ejecuta el seguimiento',s.ejecutor_asesor||navState.nombreEjecutor||'—'],
-    ['Hora inicio del seguimiento',fmtDateTime(navState.horaInicio)],
-    ['Hora fin / cierre',fmtDateTime(navState.horaFin)||'En curso'],
-    ['Fecha del seguimiento',s.fechaSeg||'—'],
-    ['Generacion del acta',new Date().toLocaleString('es-CO')],
-  ];
+  // ── INFORMACIÓN GENERAL ──
+  y=sTitle(y,'INFORMACIÓN GENERAL DE LA REUNIÓN');
+  // Row1: Tema + Fecha
+  cell(mL,y,cW*0.72,10,'Tema(s) de reunión:','Seguimiento Comercial '+modoLabel+' — '+sede);
+  cell(mL+cW*0.72,y,cW*0.28,10,'Fecha:',d.fecha);
+  y+=10;
+  // Row2: Lugar + H.inicio + H.fin
+  cell(mL,y,cW*0.4,9,'Lugar:',d.lugar);
+  cell(mL+cW*0.4,y,cW*0.3,9,'Hora inicio:',d.horaIni);
+  cell(mL+cW*0.7,y,cW*0.3,9,'Hora fin:',d.horaFin);
+  y+=9;
+  // Row3: Objetivos
+  cell(mL,y,cW,14,'Objetivos de la reunión:',d.objetivos);
+  y+=14;
+  // Row4: Organizada por + N° acta
+  cell(mL,y,cW*0.72,9,'Organizada por:',ejecutor+' · '+cargo);
+  cell(mL+cW*0.72,y,cW*0.28,9,'N° de acta:',d.numero);
+  y+=11;
 
-    infoRows.forEach(function(row){
-    var k=row[0],v=row[1];
-    if(y>pH-18) y=newPage();
-    var valStr=String(v);
-    var wrappedV=doc.splitTextToSize(valStr,contentW-58);
-    var rh=Math.max(wrappedV.length,1)*5+2;
-    _rowAlt++;
-    if(_rowAlt%2===0){doc.setFillColor(245,253,254);doc.rect(margin,y-1,contentW,rh,'F');}
-    doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(0,61,69);
-    doc.text(k+':',margin+2,y+3.5);
-    doc.setFont('times','normal');doc.setFontSize(8.5);doc.setTextColor(50,50,50);
-    doc.text(wrappedV,margin+58,y+3.5);
-    y+=rh;
+  // ── TEMAS ──
+  y=checkY2(y,40);
+  y=sTitle(y,'TEMAS');
+  // Header
+  doc.setFillColor(235,235,235);
+  [mL,mL+10,mL+10+cW*0.5,mL+10+cW*0.75].forEach(function(x,i){
+    var w=[10,cW*0.5,cW*0.25,cW*0.25-10][i];
+    doc.rect(x,y,w,7,'FD');
   });
-  y+=5;doc.setDrawColor(0,176,185);doc.line(margin,y,pW-margin,y);y+=6;
+  doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(0,0,0);
+  doc.text('Ítem',mL+2,y+4.8);
+  doc.text('Tema',mL+12,y+4.8);
+  doc.text('Responsable',mL+12+cW*0.5,y+4.8);
+  doc.text('Tiempo (Estim.)',mL+12+cW*0.75,y+4.8);
+  y+=7;
+  d.temas.forEach(function(t){
+    y=checkY2(y,9);
+    doc.setDrawColor(0,0,0);doc.setLineWidth(0.2);
+    doc.rect(mL,y,10,9);doc.rect(mL+10,y,cW*0.5,9);
+    doc.rect(mL+10+cW*0.5,y,cW*0.25,9);doc.rect(mL+10+cW*0.75,y,cW*0.25-10,9);
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(0,0,0);
+    doc.text(t.letra,mL+3.5,y+5.5);
+    doc.setFont('helvetica','normal');
+    doc.text(doc.splitTextToSize(t.tema,cW*0.5-2),mL+12,y+5.5);
+    doc.text(t.responsable||'',mL+12+cW*0.5,y+5.5);
+    doc.text(t.tiempo||'',mL+12+cW*0.75,y+5.5);
+    y+=9;
+  });
+  y+=4;
 
-  var _rowAlt=0;
-  function secTitle(txt){
-    if(y>pH-35) y=newPage();
-    _rowAlt=0;
-    y+=2;
-    doc.setFillColor(0,61,69);doc.rect(margin,y,contentW,8,'F');
-    doc.setFillColor(0,176,185);doc.rect(margin,y,5,8,'F');
-    doc.setFont('times','bold');doc.setFontSize(9.5);doc.setTextColor(255,255,255);
-    doc.text(txt,margin+8,y+5.5);
-    y+=12;doc.setFont('times','normal');doc.setFontSize(8.5);doc.setTextColor(40,40,40);
+  // ── ASISTENTES ──
+  y=checkY2(y,50);
+  y=sTitle(y,'ASISTENTES');
+  var aCols=[10,cW*0.38,cW*0.37,cW*0.15];
+  var aX=[mL,mL+10,mL+10+cW*0.38,mL+10+cW*0.75];
+  doc.setFillColor(235,235,235);
+  aX.forEach(function(x,i){doc.rect(x,y,aCols[i],7,'FD');});
+  doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(0,0,0);
+  ['N°','Nombre','Cargo','Firma'].forEach(function(h,i){doc.text(h,aX[i]+1.5,y+4.8);});
+  y+=7;
+  // Asistentes from cuestionario
+  var asistAll = d.asistentes.length>0 ? d.asistentes : [{n:1,nombre:ejecutor,cargo:cargo}];
+  // Ensure at least 5 rows
+  while(asistAll.length<5) asistAll.push({n:asistAll.length+1,nombre:'',cargo:''});
+  asistAll.forEach(function(a){
+    y=checkY2(y,10);
+    aX.forEach(function(x,i){doc.rect(x,y,aCols[i],10);});
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(0,0,0);
+    doc.text(String(a.n),aX[0]+3,y+6);
+    if(a.nombre) doc.text(a.nombre,aX[1]+1.5,y+6);
+    if(a.cargo) doc.text(a.cargo,aX[2]+1.5,y+6);
+    y+=10;
+  });
+  y+=4;
+
+  // ── DESARROLLO ──
+  y=checkY2(y,40);
+  y=sTitle(y,'DESARROLLO');
+  var devH=Math.max(30,d.desarrollo.length/4);
+  doc.setDrawColor(0,0,0);doc.rect(mL,y,cW,devH);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(0,0,0);
+  var devLines=doc.splitTextToSize(d.desarrollo||' ',cW-4);
+  doc.text(devLines,mL+2,y+5);
+  y+=devH+4;
+
+  // ── COMPROMISOS ──
+  y=checkY2(y,60);
+  y=sTitle(y,'COMPROMISOS');
+  var cCols=[10,cW*0.35,cW*0.22,cW*0.17,cW*0.16];
+  var cX=[mL,mL+10,mL+10+cW*0.35,mL+10+cW*0.57,mL+10+cW*0.74];
+  doc.setFillColor(235,235,235);
+  cX.forEach(function(x,i){doc.rect(x,y,cCols[i],7,'FD');});
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(0,0,0);
+  ['N°','Tema/Actividad','Responsable','Fecha est.','Fecha real'].forEach(function(h,i){doc.text(h,cX[i]+1,y+4.8);});
+  y+=7;
+  // Compromisos rows - min 5
+  var compAll=d.compromisos.length>0?d.compromisos:[];
+  while(compAll.length<5) compAll.push({n:compAll.length+1,actividad:'',responsable:'',fechaEst:'',fechaReal:''});
+  compAll.forEach(function(c){
+    y=checkY2(y,11);
+    cX.forEach(function(x,i){doc.rect(x,y,cCols[i],11);});
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(0,0,0);
+    doc.text(String(c.n),cX[0]+3,y+6.5);
+    if(c.actividad) doc.text(doc.splitTextToSize(c.actividad,cCols[1]-2),cX[1]+1,y+5);
+    if(c.responsable) doc.text(c.responsable,cX[2]+1,y+6.5);
+    if(c.fechaEst) doc.text(c.fechaEst,cX[3]+1,y+6.5);
+    if(c.fechaReal) doc.text(c.fechaReal,cX[4]+1,y+6.5);
+    y+=11;
+  });
+  y+=4;
+
+  // ── SEGUIMIENTO A LOS COMPROMISOS ──
+  y=checkY2(y,45);
+  y=sTitle(y,'SEGUIMIENTO A LOS COMPROMISOS');
+  doc.setFillColor(235,235,235);
+  doc.rect(mL,y,cW*0.3,7,'FD');doc.rect(mL+cW*0.3,y,cW*0.7,7,'FD');
+  doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(0,0,0);
+  doc.text('Fecha',mL+2,y+4.8);doc.text('Observaciones / Comentarios',mL+cW*0.3+2,y+4.8);
+  y+=7;
+  for(var fi=0;fi<4;fi++){
+    y=checkY2(y,11);
+    doc.rect(mL,y,cW*0.3,11);doc.rect(mL+cW*0.3,y,cW*0.7,11);
+    y+=11;
   }
+  y+=4;
 
-  function row2(lbl,val,note){
-    var valStr=String(val!==undefined&&val!==null?val:'—');
-    var lblW=60;
-    var valW=contentW-lblW-4;
-    var wrappedVal=doc.splitTextToSize(valStr,valW);
-    var wrappedLbl=doc.splitTextToSize(lbl+':',lblW-2);
-    var rowH=Math.max(wrappedLbl.length,wrappedVal.length)*5+3;
-    if(y+rowH>pH-20) y=newPage();
-    _rowAlt++;
-    if(_rowAlt%2===0){
-      doc.setFillColor(245,253,254);
-      doc.rect(margin,y-1,contentW,rowH,'F');
-    }
-    doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(0,61,69);
-    doc.text(wrappedLbl,margin+2,y+3.5);
-    doc.setFont('times','normal');doc.setFontSize(8.5);doc.setTextColor(40,40,40);
-    doc.text(wrappedVal,margin+lblW+2,y+3.5);
-    y+=rowH;
-    if(note&&note.trim()){
-      var wn=doc.splitTextToSize('↳ '+note,contentW-6);
-      var noteH=wn.length*4.5+2;
-      if(y+noteH>pH-20) y=newPage();
-      doc.setFillColor(240,253,252);doc.rect(margin+2,y,contentW-2,noteH,'F');
-      doc.setFont('times','italic');doc.setFontSize(7.5);doc.setTextColor(0,130,140);
-      doc.text(wn,margin+4,y+3.5);y+=noteH;
-    }
-  }
+  // ── ELABORÓ ──
+  y=checkY2(y,20);
+  var ew2=cW/3;
+  doc.setFont('helvetica','bold');doc.setFontSize(7);
+  ['Elaboró:','Cargo:','Firma:'].forEach(function(lbl,i){
+    doc.rect(mL+i*ew2,y,ew2,18);
+    doc.text(lbl,mL+i*ew2+2,y+3.5);
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    if(i===0) doc.text(ejecutor,mL+2,y+9.5);
+    if(i===1) doc.text(cargo,mL+ew2+2,y+9.5);
+    doc.setFont('helvetica','bold');doc.setFontSize(7);
+  });
 
-  function _semIcon(val,meta,inv){
-    if(val===undefined||!meta) return '⬜';
-    var pct=inv?(2-(val/meta))*100:(val/meta)*100;
-    return pct>=90?'[OK]':pct>=70?'[!]':'[!!]';
-  }
-
-  if(mode==='coord'){
-    secTitle('1. GESTIÓN DE LEADS');
-    var totNuevos=(seg.leads_call||0)+(seg.leads_mercadeo||0)+(seg.leads_actividad||0)+(seg.leads_bd||0);
-    var totCont=seg.leads_continuos||0;
-    var totLeads=totNuevos+totCont;
-    // Nuevos
-    if(y>pH-30) y=newPage();
-    doc.setFillColor(0,176,185);doc.rect(margin,y,contentW,7,'F');
-    doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(255,255,255);
-    doc.text('SEGMENTO: LEADS NUEVOS',margin+3,y+5);y+=10;doc.setTextColor(40,40,40);
-    row2('Call center',seg.leads_call||0);
-    row2('Mercadeo',seg.leads_mercadeo||0);
-    row2('Actividad propia',seg.leads_actividad||0);
-    row2('Base de datos (orgánico)',seg.leads_bd||0);
-    row2('TOTAL Leads nuevos',totNuevos);
-    row2('Sol. radicadas — Nuevos',seg.sol_rad_nuevos||0);
-    var tasaNuevos=totNuevos>0&&seg.sol_rad_nuevos?(seg.sol_rad_nuevos/totNuevos*100).toFixed(1)+'%':'—';
-    row2('Tasa conv. Nuevos',tasaNuevos);
-    y+=4;
-    // Continuos
-    if(y>pH-30) y=newPage();
-    doc.setFillColor(255,217,0);doc.rect(margin,y,contentW,7,'F');
-    doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(0,61,69);
-    doc.text('SEGMENTO: LEADS CONTINUOS',margin+3,y+5);y+=10;doc.setTextColor(40,40,40);
-    row2('Total leads continuos',totCont);
-    row2('Susceptibles',seg.leads_susceptibles||0);
-    var pctSusc=totCont>0&&seg.leads_susceptibles?(seg.leads_susceptibles/totCont*100).toFixed(1)+'%':'—';
-    row2('% Susceptibles s/continuos',pctSusc);
-    row2('Sol. radicadas — Continuos',seg.sol_rad_continuos||0);
-    var tasaCont=totCont>0&&seg.sol_rad_continuos?(seg.sol_rad_continuos/totCont*100).toFixed(1)+'%':'—';
-    row2('Tasa conv. Continuos s/total',tasaCont);
-    var tasaSusc=seg.leads_susceptibles>0&&seg.sol_rad_continuos?(seg.sol_rad_continuos/seg.leads_susceptibles*100).toFixed(1)+'%':'—';
-    row2('Tasa conv. Continuos s/susceptibles',tasaSusc);
-    y+=4;
-    // Consolidado
-    row2('Total leads (Nuevos + Continuos)',totLeads);
-    row2('Total sol. radicadas',(seg.sol_rad_nuevos||0)+(seg.sol_rad_continuos||0));
-    var tasaConv=totLeads>0?((((seg.sol_rad_nuevos||0)+(seg.sol_rad_continuos||0))/totLeads)*100).toFixed(1)+'%':'—';
-    row2('Tasa conv. CONSOLIDADA',tasaConv);
-    row2('Leads gestionados',seg.leads_gest||'—');
-    row2('Tasa de contacto',seg.tasa_contacto?seg.tasa_contacto+'%':'—');
-    if(seg.obs_leads) row2('Observación',seg.obs_leads);
-    y+=3;
-
-    secTitle('2. CONVERSIÓN');
-    row2('Solicitudes radicadas',seg.sol_rad||'—');
-    row2('Solicitudes aprobadas',seg.sol_apro||'—');
-    var tasaAprob=seg.sol_rad&&seg.sol_apro?(seg.sol_apro/seg.sol_rad*100).toFixed(1)+'%':'—';
-    row2('Tasa de aprobación',tasaAprob);
-    row2('Promedio radicación diaria real',seg.prom_rad_dia||'—');
-    var metaDia=state.metas.meta_mes_n?(state.metas.meta_mes_n/30).toFixed(1):'—';
-    row2('Meta radicación diaria',metaDia);
-    if(seg.obs_conv) row2('Observación',seg.obs_conv);
-    y+=3;
-
-    // EVOLUCION MENSUAL in acta
-    var hasEvol = Object.keys(evolucionData).length > 0;
-    var mesesActa = state.meses||[state.mes||'Mayo'];
-    if(hasEvol && mesesActa.length>1){
-      secTitle('3. EVOLUCION MENSUAL DE COLOCACION');
-      if(y>pH-20) y=newPage();
-      doc.setFillColor(0,61,69);doc.rect(margin,y,cW,7,'F');
-      doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);
-      doc.text('Mes',margin+2,y+5);doc.text('Meta',margin+35,y+5);doc.text('Ejecutado',margin+65,y+5);doc.text('Cumpl.%',margin+95,y+5);doc.text('Estado',margin+120,y+5);
-      y+=9;
-      var totMeta2=0,totEjec2=0;
-      mesesActa.forEach(function(mes){
-        var mn=getMetaAcumulada(state.sedes||[],[mes]).n;
-        var exec2=evolucionData[mes]||{};
-        var rn=exec2.real_n||0;
-        var pct2=mn>0?(rn/mn*100).toFixed(1):0;
-        totMeta2+=mn; totEjec2+=rn;
-        if(y>pH-12) y=newPage();
-        _rowAlt++;
-        if(_rowAlt%2===0){doc.setFillColor(245,253,254);doc.rect(margin,y-1,cW,7,'F');}
-        var pctC2=parseFloat(pct2)>=90?[34,197,94]:parseFloat(pct2)>=70?[245,158,11]:[239,68,68];
-        doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(0,61,69);doc.text(mes,margin+2,y+4.5);
-        doc.setFont('times','normal');doc.setTextColor(40,40,40);
-        doc.text(mn.toLocaleString('es-CO'),margin+35,y+4.5);
-        doc.text(rn.toLocaleString('es-CO'),margin+65,y+4.5);
-        doc.setTextColor(...pctC2);doc.text(rn>0?pct2+'%':'—',margin+95,y+4.5);
-        doc.setTextColor(40,40,40);doc.text(rn>0?(parseFloat(pct2)>=90?'En meta':parseFloat(pct2)>=70?'En riesgo':'Fuera de meta'):'Sin dato',margin+120,y+4.5);
-        y+=7;
-      });
-      // Total row
-      if(y>pH-12) y=newPage();
-      doc.setFillColor(0,61,69);doc.rect(margin,y,cW,8,'F');
-      doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(255,217,0);
-      doc.text('TOTAL ACUMULADO',margin+2,y+5.5);
-      doc.setTextColor(255,255,255);
-      doc.text(totMeta2.toLocaleString('es-CO'),margin+35,y+5.5);
-      doc.text(totEjec2.toLocaleString('es-CO'),margin+65,y+5.5);
-      var totPct2=totMeta2>0?(totEjec2/totMeta2*100).toFixed(1):0;
-      doc.text(totEjec2>0?totPct2+'%':'—',margin+95,y+5.5);
-      y+=12;
-    }
-
-    secTitle('3. COLOCACIÓN');
-    var metaN=state.metas.meta_mes_n||0;var metaV=state.metas.meta_mes_v||0;
-    var realN=seg.real_creditos||0;var realV=seg.real_valor||0;
-    var pctN=metaN>0?(realN/metaN*100).toFixed(1)+'%':'—';
-    var pctV=metaV>0?(realV/metaV*100).toFixed(1)+'%':'—';
-    row2('Meta créditos mes',metaN.toLocaleString('es-CO'));
-    row2(_semIcon(realN,metaN,false)+' Créditos desembolsados',realN.toLocaleString('es-CO')+' ('+pctN+' de la meta)');
-    row2('Meta valor mes','$'+metaV.toLocaleString('es-CO'));
-    row2(_semIcon(realV,metaV,false)+' Valor desembolsado','$'+realV.toLocaleString('es-CO')+' ('+pctV+' de la meta)');
-    row2('Meta total periodo',state.metas.meta_total_n?state.metas.meta_total_n.toLocaleString('es-CO'):'—');
-    row2('Meta S1',state.metas.meta_s1_n?state.metas.meta_s1_n.toLocaleString('es-CO'):'—');
-    row2('Meta S2',state.metas.meta_s2_n?state.metas.meta_s2_n.toLocaleString('es-CO'):'—');
-    if(seg.obs_coloc) row2('Justificación',seg.obs_coloc);
-    if(seg.acc_coloc) row2('Acción inmediata',seg.acc_coloc);
-    y+=3;
-
-    secTitle('4. TIEMPOS DE GESTIÓN');
-    var tg=seg.t_gestion;var tr=seg.t_respuesta;
-    row2(_semIcon(tg,3,true)+' Tiempo gestión leads',tg!==undefined?tg+'h (meta: máx. 3h)':'—',seg.obs_t_gestion);
-    if(seg.acc_t_gestion) row2('Acción gestión leads',seg.acc_t_gestion);
-    row2(_semIcon(tr,72,true)+' Tiempo respuesta crédito',tr!==undefined?tr+'h hábiles (meta: máx. 72h)':'—',seg.obs_t_respuesta);
-    if(seg.acc_t_respuesta) row2('Acción respuesta crédito',seg.acc_t_respuesta);
-    y+=3;
-
-    secTitle('5. COLOCACIÓN — ESTADO DEL PORTAFOLIO');
-    var radAct=seg.sol_rad||0;
-    var factAct=seg.real_creditos||0;
-    var abiertAct=seg.sol_abiertas||0;
-    var cerrAct=seg.sol_cerr||0;
-    var recuperAct=seg.sol_recup||0;
-    var perdidasAct=Math.max(0,cerrAct-recuperAct);
-    var efectAct=factAct+abiertAct;
-    var pctEfectAct=radAct>0?((efectAct/radAct)*100).toFixed(1)+'%':'—';
-    var pctCerrAct=radAct>0?((cerrAct/radAct)*100).toFixed(1)+'%':'—';
-    var pctRecupAct=cerrAct>0?((recuperAct/cerrAct)*100).toFixed(1)+'%':'—';
-    var pctPerdAct=cerrAct>0?((perdidasAct/cerrAct)*100).toFixed(1)+'%':'—';
-    row2('Solicitudes radicadas total',radAct);
-    row2('Solicitudes FACTURADAS (desembolsadas)',factAct+(radAct>0?' ('+((factAct/radAct)*100).toFixed(1)+'% de radicadas)':''));
-    row2('Solicitudes ABIERTAS',abiertAct+(radAct>0?' ('+((abiertAct/radAct)*100).toFixed(1)+'% de radicadas)':''));
-    row2((parseFloat(pctEfectAct)>=70?'[OK]':'[!!]')+' Efectivas (Fact.+Abiert.)',efectAct+' = '+pctEfectAct+' — Meta ≥70%');
-    row2('Solicitudes CERRADAS (total)',cerrAct+(radAct>0?' ('+pctCerrAct+' de radicadas — Meta ≤30%)':''));
-    row2('  → Recuperadas',recuperAct+' ('+pctRecupAct+' de cerradas)');
-    row2((perdidasAct===0?'[OK]':'[!!]')+' → Perdidas (Cerradas−Recuperadas)',perdidasAct+' ('+pctPerdAct+' de cerradas)');
-    row2('Solicitudes pendientes',seg.sol_pend||0);
-    var pctCong=seg.sol_rad&&seg.sol_cong?(seg.sol_cong/seg.sol_rad*100).toFixed(1)+'%':'—';
-    row2('Solicitudes congeladas',seg.sol_cong!==undefined?`${seg.sol_cong} (${pctCong} de radicadas)`:'—');
-    if(seg.obs_serv) row2('Observación portafolio',seg.obs_serv);
-    if(seg.acc_serv) row2('Acción inmediata',seg.acc_serv);
-    y+=3;
-
-    secTitle('6. SATISFACCIÓN');
-    row2(_semIcon(seg.csat,100,false)+' CSAT',seg.csat!==undefined?seg.csat+'% (meta: 100%)':'—',seg.obs_csat);
-    row2(_semIcon(seg.nps,90,false)+' NPS',seg.nps!==undefined?seg.nps+'% (meta mín: 90%)':'—',seg.obs_nps);
-    y+=3;
-
-    secTitle('7. ACTIVIDADES');
-    var pctAct=seg.act_plan&&seg.act_ejec?(seg.act_ejec/seg.act_plan*100).toFixed(1)+'%':'—';
-    row2('Actividades planteadas',seg.act_plan||'—');
-    row2('Actividades ejecutadas',seg.act_ejec!==undefined?`${seg.act_ejec} (${pctAct})`:'—');
-    row2('Chats WhatsApp atendidos',seg.chats||'—');
-    var genAnticipo=seg.anticipo_leads?seg.anticipo_leads*3000:0;
-    var anticOk=genAnticipo>=( seg.anticipo_val||0);
-    row2((anticOk?'[OK]':'[!!]')+' Efectividad anticipo',seg.anticipo_val?`Anticipo $${seg.anticipo_val.toLocaleString('es-CO')} — Generó $${genAnticipo.toLocaleString('es-CO')} (${seg.anticipo_leads} leads × $3.000) — ${anticOk?'EFECTIVA':'NO EFECTIVA'}`:'—',seg.obs_anticipo);
-    if(seg.acc_act) row2('Acción actividades',seg.acc_act);
-    y+=3;
-
-    secTitle('8. CALIDAD Y PQRS');
-    row2((seg.snc_total===0?'[OK]':'[!!]')+' SNC recibidas',seg.snc_total!==undefined?`${seg.snc_total} (meta: 0)`:'—',seg.obs_snc);
-    if(seg.acc_snc) row2('Acción correctiva SNC',seg.acc_snc);
-    row2((seg.pqrs_rec===0?'[OK]':'[!]')+' PQRS recibidas',seg.pqrs_rec!==undefined?`${seg.pqrs_rec} (meta: 0)`:'—',seg.obs_pqrs);
-    row2('PQRS justificada',pqrsJust==='si'?'Sí — Justificada':pqrsJust==='no'?'No — No justificada':'N/A');
-    if(seg.acc_pqrs) row2('Plan de respuesta PQRS',seg.acc_pqrs);
-    y+=3;
-
-    // OAC POR INDICADOR
-    secTitle('9. GESTION POR INDICADOR - OBSERVACIONES Y COMPROMISOS');
-    var oacs=[
-      {nom:'Gestion de Leads',d:seg.oac_leads},
-      {nom:'Conversion',d:seg.oac_conv},
-      {nom:'Colocacion y Portafolio',d:seg.oac_port},
-      {nom:'Actividades',d:seg.oac_act},
-    ];
-    oacs.forEach(function(item){
-      if(!item.d||(!item.d.obs&&!item.d.accion&&!item.d.compromiso)) return;
-      if(y>pH-30) y=newPage();
-      doc.setFont('times','bold');doc.setFontSize(8.5);doc.setTextColor(0,61,69);
-      doc.text(item.nom+':',margin+2,y+3.5);y+=7;
-      if(item.d.practica) row2('  Evaluacion',item.d.practica==='buena'?'[OK] Buena practica - replicar':item.d.practica==='mejora'?'[!!] Requiere mejora':'[!] En riesgo');
-      if(item.d.obs) row2('  Observacion',item.d.obs);
-      if(item.d.accion) row2('  Accion inmediata',item.d.accion);
-      if(item.d.compromiso) row2('  Compromiso pactado',item.d.compromiso);
-      if(item.d.responsable) row2('  Responsable',item.d.responsable);
-      y+=2;
-    });
-
-    // PLAN DE ACCION
-    if(seg.plan_accion&&seg.plan_accion.length>0){
-      secTitle('10. PLAN DE ACCION - COMPROMISOS DE MEJORA CONTINUA');
-      var planHeader='Accion';
-      if(y>pH-20) y=newPage();
-      doc.setFillColor(0,61,69);doc.rect(margin,y,contentW,7,'F');
-      doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);
-      doc.text('N',margin+2,y+5);doc.text('Accion comprometida',margin+12,y+5);
-      doc.text('Responsable',margin+contentW*0.55,y+5);doc.text('Prior.',margin+contentW*0.72,y+5);doc.text('Fecha',margin+contentW*0.84,y+5);
-      y+=9;
-      seg.plan_accion.forEach(function(item,idx){
-        if(y>pH-15) y=newPage();
-        _rowAlt++;
-        if(_rowAlt%2===0){doc.setFillColor(245,253,254);doc.rect(margin,y-1,contentW,7,'F');}
-        doc.setFont('times','normal');doc.setFontSize(8);doc.setTextColor(40,40,40);
-        doc.text(String(idx+1),margin+2,y+4.5);
-        var accionW=doc.splitTextToSize(item.accion||'',contentW*0.5);
-        doc.text(accionW,margin+12,y+4.5);
-        doc.text(item.responsable||'—',margin+contentW*0.55,y+4.5);
-        var priorColor=item.prioridad==='Alta'?[239,68,68]:item.prioridad==='Media'?[245,158,11]:[34,197,94];
-        doc.setTextColor(...priorColor);doc.text(item.prioridad||'—',margin+contentW*0.72,y+4.5);
-        doc.setTextColor(40,40,40);doc.text(item.fecha||'—',margin+contentW*0.84,y+4.5);
-        y+=Math.max(7,accionW.length*5);
-      });
-      y+=5;
-    }
-
-    // CALIFICACION Y FORTALEZAS
-    if(seg.calif_seguimiento){
-      secTitle('11. EVALUACION DEL SEGUIMIENTO');
-      row2('Calificacion general',String(seg.calif_seguimiento)+'/10');
-      if(seg.fortalezas_equipo) row2('Fortalezas del equipo',seg.fortalezas_equipo);
-      if(seg.oportunidades_equipo) row2('Oportunidades de mejora',seg.oportunidades_equipo);
-      if(seg.mensaje_lider) row2('Mensaje del lider',seg.mensaje_lider);
-      y+=3;
-    }
-
-    secTitle('12. ALERTAS GENERADAS');
-    var alertas=[];
-    if(seg.t_gestion>3) alertas.push('🔴 Tiempo gestión leads supera las 3 horas');
-    if(seg.t_respuesta>72) alertas.push('🔴 Tiempo respuesta crédito supera las 72 horas hábiles');
-    if(seg.snc_total>0) alertas.push(`⚠️ ${seg.snc_total} SNC registrada(s)`);
-    if(seg.pqrs_rec>0) alertas.push(`⚠️ ${seg.pqrs_rec} PQRS recibida(s)`);
-    if(seg.anticipo_val&&genAnticipo<seg.anticipo_val) alertas.push('🔴 Actividad de anticipo no efectiva');
-    if(alertas.length===0) alertas.push('Sin alertas críticas en este seguimiento');
-    alertas.forEach(a=>row2('',a));
-    y+=3;
-
-    secTitle('10. OBSERVACIONES Y COMPROMISOS');
-    row2('Observaciones',seg.observaciones||'Sin observaciones registradas.');
-    row2('Pendientes',seg.pendientes||'Sin pendientes registrados.');
-    y+=3;
-
-  } else {
-    // ASESOR ACTA
-    secTitle('1. GESTIÓN DE LEADS');
-    row2('Leads asignados',seg.a_leads_asig||'—');
-    row2('Leads gestionados',seg.a_leads_gest||'—');
-    row2((seg.a_leads_venc>0?'[!!]':'[OK]')+' Leads vencidos',seg.a_leads_venc||0);
-    row2('Leads convertidos a crédito',seg.a_leads_conv||'—');
-    if(seg.a_obs_leads) row2('Observación',seg.a_obs_leads);
-    y+=3;
-
-    secTitle('2. ATENCIÓN AL CLIENTE');
-    row2((seg.a_t_respuesta<=3?'[OK]':'[!!]')+' Tiempo de respuesta',seg.a_t_respuesta?seg.a_t_respuesta+'h (meta: máx. 3h)':'—');
-    row2('Fecha monitoreo',seg.a_fecha_monitoreo||'—');
-    row2('Chats atendidos',seg.a_chats||'—');
-    row2('Chats tipificados',seg.a_chats_tip||'—');
-    row2('Llamadas efectivas',seg.a_llamadas_ef||'—');
-    row2('Llamadas no conectadas',seg.a_llamadas_nc||'—');
-    if(seg.a_obs_atencion) row2('Observación',seg.a_obs_atencion);
-    y+=3;
-
-    secTitle('3. NEGOCIOS');
-    row2('Negocios asignados',seg.a_neg_asig||'—');
-    row2('Negocios gestionados',seg.a_neg_gest||'—');
-    row2('Negocios perdidos',seg.a_neg_perd||'—');
-    row2('Negocios facturados',seg.a_neg_fact||'—');
-    row2('Negocios recuperados',seg.a_neg_recup||'—');
-    var efNeg=seg.a_neg_asig&&seg.a_neg_fact?(seg.a_neg_fact/seg.a_neg_asig*100).toFixed(1)+'%':'—';
-    row2('% Efectividad',efNeg);
-    if(seg.a_obs_neg) row2('Observación',seg.a_obs_neg);
-    y+=3;
-
-    secTitle('4. IMAGEN Y PRESENTACIÓN');
-    row2('Dotación nueva',seg.dotacion==='si'?'✅ Sí':seg.dotacion==='no'?'🔴 No — Escalado a TH':'—');
-    if(seg.dotacion==='si'){row2('Conforme al manual',seg.dotManual==='si'?'✅ Sí':'⚠️ No');if(seg.dot_novedad)row2('Novedad',seg.dot_novedad);}
-    if(seg.dotacion==='no'&&seg.dot_escalamiento) row2('Escalamiento TH',seg.dot_escalamiento);
-    row2('Presentación personal',seg.a_presentacion||'—');
-    row2('Actitud y disposición',seg.a_actitud||'—');
-    if(seg.a_obs_presentacion) row2('Observación',seg.a_obs_presentacion);
-    y+=3;
-
-    secTitle('5. EVALUACIÓN 360°');
-    row2('Conocimiento portafolio',seg.a_conocimiento?seg.a_conocimiento+'/5':'—');
-    row2('Manejo de objeciones',seg.a_objeciones?seg.a_objeciones+'/5':'—');
-    row2('Compromisos previos',seg.a_compromisos||'—');
-    row2('Tendencia vs mes anterior',seg.a_tendencia||'—');
-    row2('Comunicación con el equipo',seg.a_comunicacion||'—');
-    row2('Trabajo en equipo',seg.a_trabajo_eq||'—');
-    row2('Fortalezas',seg.a_fortalezas||'—');
-    row2('Oportunidades de mejora',seg.a_oportunidades||'—');
-    row2('CALIFICACIÓN GENERAL',seg.a_calificacion?seg.a_calificacion+'/10':'—');
-    y+=3;
-
-    secTitle('6. COMPROMISOS Y PLAN DE ACCIÓN');
-    row2('Compromisos del asesor',seg.a_compromisos_nuevos||'—');
-    row2('Compromisos del coordinador',seg.a_compromisos_coord||'—');
-    row2('Observaciones generales',seg.a_observaciones||'—');
-    row2('Pendientes',seg.a_pendientes||'—');
-    y+=3;
-  }
-
-  // FIRMAS
-  if(y>pH-40) y=newPage();
-  y+=5;doc.setDrawColor(0,176,185);doc.line(margin,y,pW-margin,y);y+=8;
-  doc.setFillColor(0,61,69);doc.roundedRect(margin,y-4,contentW,8,2,2,'F');
-  doc.setFillColor(0,176,185);doc.roundedRect(margin,y-4,5,8,2,2,'F');
-  doc.setFont('times','bold');doc.setFontSize(9.5);doc.setTextColor(255,255,255);
-  doc.text('FIRMAS Y APROBACIÓN',margin+8,y+1.5);y+=13;
-  doc.setFont('times','normal');doc.setFontSize(9);doc.setTextColor(60,60,60);
-  doc.text('Coordinador / Evaluador:',margin,y);
-  doc.setDrawColor(150,150,150);doc.line(margin+55,y+1,margin+120,y+1);
-  doc.text('Fecha: _____________',pW-margin-50,y);y+=12;
-  if(mode==='coord'){
-    doc.text('Ejecuta el seguimiento:',margin,y);
-    doc.line(margin+55,y+1,margin+120,y+1);y+=12;
-  } else {
-    doc.text('Asesor evaluado:',margin,y);
-    doc.line(margin+45,y+1,margin+120,y+1);
-    doc.text('Fecha: _____________',pW-margin-50,y);y+=12;
-  }
-  // Pie de página en todas las páginas
-  var totalPages=doc.getNumberOfPages();
-  for(var p=1;p<=totalPages;p++){
+  // Fix page numbers
+  var total=doc.getNumberOfPages();
+  for(var p=1;p<=total;p++){
     doc.setPage(p);
-    doc.setFontSize(6.5);doc.setFont('times','italic');doc.setTextColor(255,255,255);
-    doc.text('© 2026 Juan Orrego | Derechos Reservados | Proceso Preventa y Venta - Comercial — Cooperativa Minuto de Dios. Todos los derechos reservados.',margin+2,pH-2.5);
-    doc.setFontSize(7.5);doc.setFont('times','bold');doc.setTextColor(0,61,69);
-    doc.text(`Pág. ${p}/${totalPages}`,pW-margin,pH-2.5,{align:'right'});
+    drawPageHeader();
+    // Fix page number in header
+    var rx2=mL+cW-20;
+    doc.setFillColor(255,255,255);doc.rect(rx2+1,10+21,18,6,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(0,0,0);
+    doc.text(p+' de '+total,rx2+1,10+27.2);
+    doc.setFontSize(7);doc.setFont('helvetica','italic');doc.setTextColor(150,150,150);
+    doc.text('SG-FR-04 v08 — Cooperativa Minuto de Dios — PYV',mL,pH-3);
   }
 
-  var sede=getSedesLabel().replace(/[\s,\/]/g,'_').substring(0,20);
-  var mes=state.mes||'mes';
-  doc.save(`Acta_Seguimiento_${mode==='coord'?'Coord':'Asesor'}_${sede}_${mes}_${new Date().toISOString().split('T')[0]}.pdf`);
+  doc.save('Acta_SG-FR-04_'+modoLabel+'_'+sede.replace(/[\s,]/g,'_')+'_'+d.numero+'.pdf');
+  cerrarActaPrevia();
+  mostrarAlertaNav('Acta SG-FR-04 generada correctamente.');
 }
 
 function verPreviewActa(){
@@ -3846,6 +4468,21 @@ function cargarLS(){
       if(d.mode||(d.state&&d.state.mode)){ navState.modoSeleccionado = d.mode||(d.state&&d.state.mode)||''; }
       actualizarHeader();
       applyNavState(); // Apply nav state AFTER navState is fully restored
+      // Restore session if saved
+      if(navState.correoEjecutor && EMPLEADOS_BD[navState.correoEjecutor]){
+        sesionActiva = {correo: navState.correoEjecutor, ...EMPLEADOS_BD[navState.correoEjecutor]};
+        var sa = document.getElementById('inicio-sesion-activa');
+        var av = document.getElementById('sesion-avatar');
+        var sn = document.getElementById('sesion-nombre');
+        var sc = document.getElementById('sesion-cargo-sede');
+        if(sa) sa.style.display = 'block';
+        if(av){ var init2=sesionActiva.nombre.split(' ').filter(function(p){return p.length>2;}).slice(0,2).map(function(p){return p[0];}).join(''); av.textContent=init2; }
+        if(sn) sn.textContent = sesionActiva.nombre;
+        if(sc) sc.textContent = sesionActiva.cargo + ' · ' + sesionActiva.sede;
+        var inputRow = document.getElementById('inicio-correo');
+        if(inputRow) inputRow.closest('div[style*="grid"]').style.display = 'none';
+        mostrarTabs();
+      }
       // Restore H0 view
       activateSheet('h0', document.querySelectorAll('.tab')[0]);
       // If we have a saved nombre, unlock the tipo section
@@ -4207,10 +4844,27 @@ function borrarTodo(silente){
   var baseStyle = 'border:2px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;cursor:pointer;transition:.25s;background:var(--white);box-shadow:0 1px 4px rgba(0,0,0,.05)';
   if(coordCard) coordCard.style.cssText = baseStyle;
   if(asesorCard) asesorCard.style.cssText = baseStyle;
-  // Navigate to H0
+  // Navigate to H0 — full logout
   activateSheet('h0', document.querySelectorAll('.tab')[0]);
   actualizarHeader();
-  if(!silente) mostrarAlertaNav('✅ Formulario limpiado. Listo para nuevo seguimiento.');
+  // Full session reset
+  sesionActiva = null;
+  navState.nombreEjecutor=''; navState.correoEjecutor='';
+  navState.cargoEjecutor=''; navState.sedeEjecutor=''; navState.cedulaEjecutor='';
+  navState.h0Completada=false; navState.h1Guardada=false; navState.h2Guardada=false;
+  navState.modoSeleccionado=null;
+  // Reset login UI
+  var inp=document.getElementById('login-usuario');
+  if(inp){ inp.value=''; if(typeof buscarEmpleado==='function') buscarEmpleado(''); }
+  var loginResult=document.getElementById('login-resultado');
+  if(loginResult) loginResult.innerHTML='<div style="color:var(--text2);font-size:12px;text-align:center;padding:16px 0">Escribe tu usuario para continuar</div>';
+  var loginBtn=document.getElementById('login-btn');
+  if(loginBtn){ loginBtn.disabled=true; loginBtn.style.cssText='width:100%;padding:13px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;transition:.3s'; }
+  resetBreadcrumb();
+  irEtapaLogin();
+  ocultarTabs();
+  applyNavState();
+  if(!silente) mostrarAlertaNav('Sesion cerrada. Ingresa tu usuario para continuar.');
 }
 
 // ============================================================
@@ -4321,6 +4975,7 @@ function actualizarMetaAsesorCarta(){
 }
 
 function abrirCartaMetas(){
+  setTimeout(function(){initCartaAsesorSelector();if(typeof asesoresSeleccionados!=='undefined'){asesoresSeleccionados=[];renderAsesoresTags();}},150);
   setTimeout(renderIndicadoresPVP,80);
   var mc = document.getElementById('modal-carta');
   if(!mc) return;
@@ -4509,6 +5164,7 @@ function cargarMetasDesdeHoja1(){
 }
 
 function generarCartaMetasPDF(){
+  if((cartaTipo||'coord')==='asesor'&&typeof asesoresSeleccionados!=='undefined'&&asesoresSeleccionados.length>0){generarCartaMetasMultiAsesor();return;}
   if(typeof window.jspdf==='undefined'){alert('Cargando PDF...');return;}
   var jsPDF2=window.jspdf.jsPDF;
   var doc=new jsPDF2({orientation:'portrait',unit:'mm',format:'a4'});
@@ -5396,9 +6052,15 @@ function showTab(id, btn){
     renderH4();
     return;
   }
-  // H0: siempre accesible
+  // H0: siempre accesible — muestra menu de etapas
   if(id==='h0'){
     activateSheet('h0', btn);
+    // Si hay sesion activa, mostrar menu; si no, login
+    if(sesionActiva){
+      irEtapaMenu();
+    } else {
+      irEtapaLogin();
+    }
     return;
   }
   // H1: requiere completar Inicio
@@ -6432,7 +7094,7 @@ function restoreAnioAntData(data){
 // ============================================================
 
 // ── SELECTOR MENU ──
-function abrirCartaCompromisosMenu(){
+function abrirCartaCompromisosMenu(){setBreadcrumb('Documentos','Carta de Metas');
   var el = document.getElementById('modal-selector-carta');
   if(!el){ console.error('Modal selector not found'); return; }
   document.body.appendChild(el);
@@ -6504,7 +7166,7 @@ var COMP_TIPO_CONFIG = {
   acuerdo:       {label:'Acuerdo de partes',            color:'#0ea5e9', bg:'#f0f9ff', icon:'🤝'},
 };
 
-function abrirModalCompromisos(){
+function abrirModalCompromisos(){setBreadcrumb('Documentos','Compromisos Laborales');
   var modal = document.getElementById('modal-compromisos');
   if(!modal){ console.error('Modal compromisos not found'); return; }
   document.body.appendChild(modal);
@@ -6896,7 +7558,7 @@ function copiarResumenCompromiso(){
 
 
 var VALOR_LEAD=3000;
-function abrirCalculadoraAnticipo(){
+function abrirCalculadoraAnticipo(){setBreadcrumb('Herramientas','Calculadora Anticipo');
   var modal=document.getElementById('modal-anticipo');if(!modal)return;
   document.body.appendChild(modal);
   modal.style.cssText='display:block;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;overflow-y:auto;padding:20px';
@@ -7060,6 +7722,934 @@ function enviarCorreoAnticipo(){
   mostrarAlertaNav('Se abrio tu cliente de correo. Adjunta el PDF.');
 }
 
+
+// ── APP VERSION DISPLAY ──
+(function(){
+  function showVersion(v){
+    var badge = document.getElementById('app-version-badge');
+    if(badge){
+      badge.textContent = 'v' + v;
+      badge.style.display = 'block';
+    }
+    // Also store globally
+    window.APP_VERSION = v;
+  }
+  // Only show version in Electron
+  if(window.electronAPI && window.electronAPI.getAppVersion){
+    window.electronAPI.getAppVersion().then(function(v){
+      showVersion(v);
+    }).catch(function(){});
+  }
+  // In browser: hide badge
+})();
+
+
+
+
+
+
+// ── MENU INTERACTIVO H0 ──
+
+
+
+
+
+
+
+// ══════════════════════════════════════════════
+// LOGIN CORPORATIVO Y GESTIÓN DE SESIÓN
+// ══════════════════════════════════════════════
+var sesionActiva = null;
+
+
+
+
+
+
+
+
+
+
+
+
+// ══════════════════════════════════════════════
+// SISTEMA DE ETAPAS Y LOGIN
+// ══════════════════════════════════════════════
+var sesionActiva = null;
+
+function buscarEmpleado(usuario){
+  var wrap = document.getElementById('login-input-wrap');
+  var res = document.getElementById('login-resultado');
+  var btn = document.getElementById('login-btn');
+  if(!res||!btn) return;
+  usuario = (usuario||'').trim().toLowerCase();
+  if(usuario.length < 3){
+    res.innerHTML = '<div style="color:var(--text2);font-size:12px;text-align:center;padding:16px 0">Escribe tu usuario para continuar</div>';
+    btn.disabled=true;
+    btn.style.cssText='width:100%;padding:13px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;transition:.3s';
+    if(wrap) wrap.style.borderColor='var(--border)';
+    return;
+  }
+  var correo = usuario + '@coopminutodedios.com';
+  var emp = EMPLEADOS_BD[correo];
+  if(emp){
+    if(wrap) wrap.style.borderColor='#22c55e';
+    var initials = emp.nombre.split(' ').filter(function(p){return p.length>2;}).slice(0,2).map(function(p){return p[0].toUpperCase();}).join('');
+    res.innerHTML =
+      '<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">'
+      +'<div style="width:52px;height:52px;background:var(--dark);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:var(--yellow);flex-shrink:0">'+initials+'</div>'
+      +'<div>'
+        +'<div style="font-size:22px;font-weight:800;color:var(--dark);line-height:1.2">'+emp.nombre+'</div>'
+        +'<div style="font-size:12px;color:#16a34a;font-weight:600;margin-top:3px">'+emp.cargo+'</div>'
+        +'<div style="font-size:11px;color:var(--text2);margin-top:2px"><i class="ti ti-map-pin" style="font-size:11px"></i> '+emp.sede+'</div>'
+      +'</div>'
+      +'</div>';
+    btn.disabled=false;
+    btn.style.cssText='width:100%;padding:13px;background:var(--dark);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:Ubuntu,sans-serif;transition:.3s';
+  } else {
+    if(wrap) wrap.style.borderColor='#f87171';
+    res.innerHTML = '<div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:14px;text-align:center">'
+      +'<div style="font-size:22px;margin-bottom:6px">🔍</div>'
+      +'<div style="font-size:13px;font-weight:700;color:#dc2626">Usuario no encontrado</div>'
+      +'<div style="font-size:11px;color:#9ca3af;margin-top:4px">Verifica tu usuario o contacta al administrador</div>'
+      +'</div>';
+    btn.disabled=true;
+    btn.style.cssText='width:100%;padding:13px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:not-allowed;font-family:Ubuntu,sans-serif;transition:.3s';
+  }
+}
+
+function loginIngresar(){
+  var input = document.getElementById('login-usuario');
+  if(!input) return;
+  var usuario = input.value.trim().toLowerCase();
+  var correo = usuario + '@coopminutodedios.com';
+  var emp = EMPLEADOS_BD[correo];
+  if(!emp){ mostrarAlertaNav('Usuario no encontrado.'); return; }
+
+  // Set session
+  sesionActiva = {correo:correo, nombre:emp.nombre, cargo:emp.cargo, sede:emp.sede, cedula:emp.cedula};
+  navState.nombreEjecutor = emp.nombre;
+  navState.correoEjecutor = correo;
+  navState.cargoEjecutor = emp.cargo;
+  navState.sedeEjecutor = emp.sede;
+  navState.cedulaEjecutor = emp.cedula;
+  state.ejecutor = emp.nombre;
+
+  // Update menu UI
+  var av = document.getElementById('menu-avatar');
+  var mn = document.getElementById('menu-nombre');
+  var mc = document.getElementById('menu-cargo-sede');
+  var initials = emp.nombre.split(' ').filter(function(p){return p.length>2;}).slice(0,2).map(function(p){return p[0].toUpperCase();}).join('');
+  if(av) av.textContent = initials;
+  if(mn) mn.textContent = emp.nombre;
+  if(mc) mc.textContent = emp.cargo + ' · ' + emp.sede;
+
+  // Go to etapa menu
+  irEtapaMenu();
+  guardarLS();
+  mostrarAlertaNav('Bienvenido/a, ' + emp.nombre.split(' ').filter(function(p){return p.length>2;})[0] + '. ¿Qué deseas hacer?');
+}
+
+function irEtapaLogin(){
+  document.getElementById('etapa-login').style.display='flex';
+  document.getElementById('etapa-menu').style.display='none';
+  ocultarTabs();
+  // Hide header action bar
+  var hdr = document.getElementById('hdr-actions-bar');
+  if(hdr) hdr.style.display='none';
+}
+
+function irEtapaMenu(){
+  var el = document.getElementById('etapa-login');
+  var em = document.getElementById('etapa-menu');
+  if(el) el.style.display='none';
+  if(em) em.style.display='block';
+  ocultarTabs();
+  // Hide header action bar too
+  var hdr = document.getElementById('hdr-actions-bar');
+  if(hdr) hdr.style.display='none';
+  // Make sure we are on h0
+  var h0 = document.getElementById('h0');
+  if(h0) h0.style.display='block';
+}
+
+function irEtapaSeguimiento(){
+  var el = document.getElementById('etapa-login');
+  var em = document.getElementById('etapa-menu');
+  if(el) el.style.display='none';
+  if(em) em.style.display='none';
+  mostrarTabs();
+  // Show header action bar
+  var hdr = document.getElementById('hdr-actions-bar');
+  if(hdr) hdr.style.display='flex';
+}
+
+function cerrarSesion(){
+  sesionActiva = null;
+  navState.nombreEjecutor='';navState.correoEjecutor='';navState.cargoEjecutor='';
+  navState.sedeEjecutor='';navState.cedulaEjecutor='';
+  var input = document.getElementById('login-usuario');
+  if(input){ input.value=''; buscarEmpleado(''); }
+  borrarTodo(true);
+  irEtapaLogin();
+}
+
+function mostrarTabs(){
+  var tb = document.getElementById('tabs-bar');
+  if(tb) tb.classList.add('visible');
+}
+
+function ocultarTabs(){
+  var tb = document.getElementById('tabs-bar');
+  if(tb) tb.classList.remove('visible');
+}
+
+function validarNombreMenu(){ /* legacy compat */ }
+function confirmarNombre(){ /* legacy compat */ }
+function loginCorreo(){ loginIngresar(); }
+function validarCorreoMenu(){ /* legacy compat */ }
+
+
+// ══════════════════════════════════════════════
+// SELECTOR TIPO DOCUMENTO
+// ══════════════════════════════════════════════
+// abrirSelectorDocumento removed — now 2 separate buttons
+
+function abrirActaPrevia(){
+  // Pre-fill with session data
+  var ejecutor = navState.nombreEjecutor||'---';
+  var cargo = navState.cargoEjecutor||'---';
+  var sede = (state.sedes||[]).join(', ')||navState.sedeEjecutor||'---';
+  var today = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('acta-fecha');
+  if(el && !el.value) el.value = state.fechaSeg||today;
+  var lu = document.getElementById('acta-lugar');
+  if(lu && !lu.value) lu.value = sede;
+  var num = document.getElementById('acta-numero');
+  if(num && !num.value) num.value = 'PYV-'+new Date().getFullYear()+'-'+String(Date.now()).slice(-4);
+  // Pre-fill first asistente
+  var asistRows = document.querySelectorAll('.acta-asist-row');
+  if(asistRows[0]){
+    var ins = asistRows[0].querySelectorAll('input');
+    if(ins[0]&&!ins[0].value) ins[0].value = ejecutor;
+    if(ins[1]&&!ins[1].value) ins[1].value = cargo;
+  }
+  // Open modal
+  var el2 = document.getElementById('modal-acta-previa');
+  if(!el2) return;
+  document.body.appendChild(el2);
+  el2.style.cssText='display:block;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99998;overflow-y:auto;padding:20px';
+}
+
+function cerrarActaPrevia(){
+  var el = document.getElementById('modal-acta-previa');
+  if(el) el.style.display='none';
+}
+
+function getActaData(){
+  // Temas
+  var temas=[];
+  var letters=['A','B','C'];
+  document.querySelectorAll('.acta-tema-row').forEach(function(row,i){
+    var ins=row.querySelectorAll('input');
+    temas.push({letra:letters[i]||String(i+1),tema:ins[0]?ins[0].value:'',responsable:ins[1]?ins[1].value:'',tiempo:ins[2]?ins[2].value:''});
+  });
+  // Asistentes
+  var asistentes=[];
+  document.querySelectorAll('.acta-asist-row').forEach(function(row,i){
+    var ins=row.querySelectorAll('input');
+    var nombre=ins[0]?ins[0].value:'';
+    var cargo=ins[1]?ins[1].value:'';
+    if(nombre||cargo) asistentes.push({n:i+1,nombre:nombre,cargo:cargo});
+  });
+  // Compromisos
+  var compromisos=[];
+  document.querySelectorAll('.acta-comp-row').forEach(function(row,i){
+    var ins=row.querySelectorAll('input');
+    var act=ins[0]?ins[0].value:'';
+    var resp=ins[1]?ins[1].value:'';
+    var fEst=ins[2]?ins[2].value:'';
+    var fReal=ins[3]?ins[3].value:'';
+    if(act) compromisos.push({n:i+1,actividad:act,responsable:resp,fechaEst:fEst,fechaReal:fReal});
+  });
+  return {
+    numero: document.getElementById('acta-numero')?.value||'---',
+    fecha: document.getElementById('acta-fecha')?.value||new Date().toLocaleDateString('es-CO'),
+    lugar: document.getElementById('acta-lugar')?.value||'---',
+    horaIni: document.getElementById('acta-hora-ini')?.value||'---',
+    horaFin: document.getElementById('acta-hora-fin')?.value||'---',
+    objetivos: document.getElementById('acta-objetivos')?.value||'---',
+    desarrollo: document.getElementById('acta-desarrollo')?.value||'---',
+    temas: temas,
+    asistentes: asistentes,
+    compromisos: compromisos
+  };
+}
+
+// ══════════════════════════════════════════════
+// GENERADOR INFORME COMPLETO
+// ══════════════════════════════════════════════
+function generarInformePDF(){
+  if(typeof window.jspdf==='undefined'){mostrarAlertaNav('Cargando PDF...');return;}
+  var jsPDF2=window.jspdf.jsPDF;
+  var doc=new jsPDF2({orientation:'portrait',unit:'mm',format:'letter'});
+  var pW=doc.internal.pageSize.width,pH=doc.internal.pageSize.height;
+  var mL=20,mR=20,cW=pW-mL-mR;
+  var s=state.seguimiento||{},m=state.metas||{};
+  var ejecutor=navState.nombreEjecutor||'---';
+  var cargo=navState.cargoEjecutor||'---';
+  var sede=(state.sedes||[]).join(', ')||'---';
+  var mes=state.mes||'---',anio=state.anio||'2026';
+  var modoLabel=mode==='coord'?'Coordinación':'Asesor';
+  var metaN=m.meta_mes_n||0,realN=s.real_creditos||0;
+  var pct=metaN>0?((realN/metaN)*100):0;
+
+  // ── PAGE HEADER ──
+  function pgHdr(titulo){
+    doc.setFillColor(0,61,69);doc.rect(0,0,pW,26,'F');
+    doc.setFillColor(0,176,185);doc.ellipse(pW*0.15,0,pW*0.18,20,'F');
+    doc.setFillColor(255,217,0);doc.ellipse(pW*0.35,0,16,14,'F');
+    doc.setFillColor(174,201,0);doc.ellipse(pW,0,22,22,'F');
+    doc.setFillColor(0,176,185);doc.rect(0,pH-5,pW*0.6,5,'F');
+    doc.setFillColor(255,217,0);doc.rect(pW*0.6,pH-5,pW*0.2,5,'F');
+    doc.setFillColor(174,201,0);doc.rect(pW*0.8,pH-5,pW*0.2,5,'F');
+    try{doc.addImage(LOGO_B64,'PNG',pW-56,2,44,16);}catch(e){}
+    doc.setFont('times','bold');doc.setFontSize(12);doc.setTextColor(255,255,255);
+    doc.text(titulo||'INFORME DE SEGUIMIENTO COMERCIAL',mL,11);
+    doc.setFont('times','italic');doc.setFontSize(7.5);doc.setTextColor(255,217,0);
+    doc.text(modoLabel+' · '+sede+' · '+mes+' '+anio,mL,18);
+  }
+
+  function secHdr(y,txt,color){
+    var c=color||[0,61,69];
+    doc.setFillColor(c[0],c[1],c[2]);doc.rect(mL,y,cW,7,'F');
+    doc.setFillColor(255,217,0);doc.rect(mL,y,4,7,'F');
+    doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(255,255,255);
+    doc.text(txt,mL+7,y+5);
+    return y+9;
+  }
+
+  function kpiRow(y,lbl,val,meta,estado,semColor){
+    var rowH=8;
+    if(y+rowH>pH-14){doc.addPage();pgHdr();y=32;}
+    // Label
+    doc.setFillColor(248,250,252);doc.rect(mL,y,cW*0.38,rowH,'F');
+    doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(60,60,60);
+    doc.text(String(lbl),mL+2,y+5.5);
+    // Value
+    doc.setFillColor(255,255,255);doc.rect(mL+cW*0.38,y,cW*0.2,rowH,'F');
+    doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(0,61,69);
+    doc.text(String(val||'—'),mL+cW*0.38+2,y+5.5);
+    // Meta
+    doc.setFillColor(248,250,252);doc.rect(mL+cW*0.58,y,cW*0.2,rowH,'F');
+    doc.setFont('times','normal');doc.setFontSize(8);doc.setTextColor(100,100,100);
+    doc.text(String(meta||'—'),mL+cW*0.58+2,y+5.5);
+    // Estado
+    var sc=semColor||[100,100,100];
+    doc.setFillColor(sc[0]===22?230:sc[0]===180?255:245,sc[0]===22?250:sc[0]===180?240:245,sc[0]===22?230:sc[0]===180?240:245);
+    doc.rect(mL+cW*0.78,y,cW*0.22,rowH,'F');
+    doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(sc[0],sc[1],sc[2]);
+    doc.text(String(estado||'—'),mL+cW*0.78+2,y+5.5);
+    // Lines
+    doc.setDrawColor(220,220,220);doc.setLineWidth(0.1);
+    doc.line(mL,y+rowH,mL+cW,y+rowH);
+    return y+rowH;
+  }
+
+  function semColor(val,meta,invert){
+    if(!val||!meta)return[100,100,100];
+    var p=val/meta*100;
+    if(invert)p=p<50?100:(p>100?0:100-p);
+    if(p>=90)return[22,101,52];
+    if(p>=70)return[161,98,7];
+    return[180,30,30];
+  }
+
+  function drawBar(doc,x,y,w,h,pct,colorFill){
+    doc.setFillColor(235,235,235);doc.rect(x,y,w,h,'F');
+    var fill=Math.min(w,w*pct/100);
+    if(fill>0){doc.setFillColor(colorFill[0],colorFill[1],colorFill[2]);doc.rect(x,y,fill,h,'F');}
+    doc.setDrawColor(200,200,200);doc.setLineWidth(0.2);doc.rect(x,y,w,h);
+    doc.setFont('times','bold');doc.setFontSize(7);doc.setTextColor(40,40,40);
+    doc.text(pct.toFixed(1)+'%',x+w+2,y+h-1);
+  }
+
+  function checkY(y,need){
+    if(y+need>pH-16){doc.addPage();pgHdr();return 32;}
+    return y;
+  }
+
+  // ══ PAGE 1 ══
+  pgHdr('INFORME DE SEGUIMIENTO — SOPORTE DE ACTA');
+  var y=32;
+
+  // ── ENCABEZADO INFORME ──
+  doc.setFillColor(0,61,69);doc.rect(mL,y,cW,16,'F');
+  doc.setFillColor(0,176,185);doc.rect(mL,y,6,16,'F');
+  doc.setFont('times','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);
+  doc.text('DATOS GENERALES DEL SEGUIMIENTO',mL+10,y+6);
+  doc.setFont('times','normal');doc.setFontSize(8.5);doc.setTextColor(255,217,0);
+  doc.text('Generado: '+new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})+' '+new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),mL+10,y+12);
+  y+=18;
+
+  // Info grid 2x3
+  var infoGrid=[
+    ['Realizado por:',ejecutor,'Cargo:',cargo],
+    ['Sede(s):',sede,'Período:',mes+' '+anio],
+    ['Tipo:',modoLabel,'Fecha seguimiento:',state.fechaSeg||'---'],
+  ];
+  infoGrid.forEach(function(row){
+    doc.setFillColor(248,250,252);doc.rect(mL,y,cW/2-2,8,'F');
+    doc.setFillColor(248,250,252);doc.rect(mL+cW/2+2,y,cW/2-2,8,'F');
+    doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(80,80,80);
+    doc.text(row[0],mL+2,y+5.5);doc.text(row[2],mL+cW/2+4,y+5.5);
+    doc.setFont('times','normal');doc.setTextColor(0,0,0);
+    doc.text(String(row[1]).substring(0,28),mL+30,y+5.5);
+    doc.text(String(row[3]).substring(0,22),mL+cW/2+30,y+5.5);
+    doc.setDrawColor(220,220,220);doc.line(mL,y+8,mL+cW,y+8);
+    y+=8;
+  });
+  y+=6;
+
+  if(mode==='coord'){
+    // ── COLOCACION ──
+    y=checkY(y,60);
+    y=secHdr(y,'1. COLOCACIÓN Y CUMPLIMIENTO DE META');
+
+    // KPI table header
+    doc.setFillColor(230,240,245);doc.rect(mL,y,cW,7,'FD');
+    doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(0,61,69);
+    doc.text('Indicador',mL+2,y+4.8);doc.text('Resultado',mL+cW*0.38+2,y+4.8);
+    doc.text('Meta',mL+cW*0.58+2,y+4.8);doc.text('Estado',mL+cW*0.78+2,y+4.8);
+    y+=7;
+
+    var sc1=semColor(realN,metaN);
+    y=kpiRow(y,'Créditos desembolsados',realN,metaN,pct.toFixed(1)+'%',sc1);
+    y=kpiRow(y,'Valor desembolsado','$'+(s.real_valor||0).toLocaleString('es-CO'),'$'+((m.meta_mes_v||0)).toLocaleString('es-CO'),'---',[100,100,100]);
+
+    // Proyección visual
+    y=checkY(y,20);
+    var habInfo=getDiasHabilesInfo?getDiasHabilesInfo():{total:22,transcurridos:1};
+    var tDias=habInfo.total||22,tTrans=habInfo.transcurridos||1;
+    var proy=tTrans>0?Math.round(realN+(realN/tTrans)*Math.max(0,tDias-tTrans)):0;
+    var pctProy=metaN>0?(proy/metaN*100):0;
+    var scProy=pctProy>=100?[22,101,52]:pctProy>=80?[161,98,7]:[180,30,30];
+
+    doc.setFillColor(240,250,248);doc.rect(mL,y,cW,18,'F');
+    doc.setDrawColor(0,176,185);doc.setLineWidth(0.5);doc.rect(mL,y,cW,18);
+    doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(0,61,69);
+    doc.text('PROYECCIÓN DE CIERRE AL '+tDias+' días hábiles',mL+2,y+5);
+    doc.setFont('times','normal');doc.setFontSize(7.5);doc.setTextColor(60,60,60);
+    doc.text('Días transcurridos: '+tTrans+' / '+tDias+' | Ritmo actual: '+(realN/tTrans).toFixed(1)+' créditos/día',mL+2,y+10);
+    drawBar(doc,mL+2,y+12,cW*0.65,4,Math.min(100,pctProy),scProy);
+    doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(scProy[0],scProy[1],scProy[2]);
+    doc.text('Proyección: '+proy.toLocaleString('es-CO')+' ('+pctProy.toFixed(1)+'%)',mL+cW*0.7,y+15);
+    y+=22;
+
+    // ── PORTAFOLIO ──
+    y=checkY(y,50);
+    y=secHdr(y,'2. ESTADO DEL PORTAFOLIO');
+    var solRad=s.sol_rad||0,solApro=s.sol_apro||0,solAbiert=s.sol_abiertas||0;
+    var solCerr=s.sol_cerr||0,solRecup=s.sol_recup||0,solPerd=Math.max(0,solCerr-solRecup);
+    var tasaAprob=solRad>0?(solApro/solRad*100):0;
+
+    // Visual funnel
+    var funnelData=[
+      ['Radicadas',solRad,100,[0,61,69]],
+      ['Facturadas',solApro,solRad>0?solApro/solRad*100:0,[22,101,52]],
+      ['Abiertas (en trámite)',solAbiert,solRad>0?solAbiert/solRad*100:0,[124,58,237]],
+      ['Cerradas',solCerr,solRad>0?solCerr/solRad*100:0,[180,30,30]],
+      ['Recuperadas',solRecup,solCerr>0?solRecup/solCerr*100:0,[22,101,52]],
+    ];
+    funnelData.forEach(function(row){
+      y=checkY(y,9);
+      doc.setFillColor(248,250,252);doc.rect(mL,y,cW*0.35,8,'F');
+      doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(60,60,60);
+      doc.text(row[0],mL+2,y+5.5);
+      doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(row[3][0],row[3][1],row[3][2]);
+      doc.text(String(row[1]),mL+cW*0.35+2,y+5.5);
+      drawBar(doc,mL+cW*0.42,y+1,cW*0.52,6,row[2],row[3]);
+      doc.setDrawColor(220,220,220);doc.line(mL,y+8,mL+cW,y+8);
+      y+=8;
+    });
+    doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(0,61,69);
+    y+=2;
+    doc.text('Tasa de aprobación: '+tasaAprob.toFixed(1)+'%  |  Perdidas: '+solPerd,mL,y+5);
+    y+=10;
+
+    // ── LEADS ──
+    y=checkY(y,50);
+    y=secHdr(y,'3. GESTIÓN DE LEADS',[0,100,120]);
+    var leadsTotal=(s.leads_call||0)+(s.leads_mercadeo||0)+(s.leads_actividad||0)+(s.leads_bd||0)+(s.leads_continuos||0);
+    var leadsData=[
+      ['Llamadas',s.leads_call||0],['Mercadeo',s.leads_mercadeo||0],
+      ['Actividad',s.leads_actividad||0],['Base de datos',s.leads_bd||0],
+      ['Continuos (período ant.)',s.leads_continuos||0],['TOTAL LEADS',leadsTotal]
+    ];
+    var bW=(cW-10)/3;
+    leadsData.forEach(function(ld,i){
+      var bx=mL+(i%3)*(bW+5);
+      var by=y+(Math.floor(i/3)*16);
+      y=checkY(by,16);
+      var isBold=i===5;
+      doc.setFillColor(isBold?0:240,isBold?61:248,isBold?69:252);
+      doc.roundedRect(bx,by,bW,14,2,2,'F');
+      doc.setFont('times','bold');doc.setFontSize(isBold?11:10);
+      doc.setTextColor(isBold?255:0,isBold?255:61,isBold?255:69);
+      doc.text(String(ld[1]),bx+bW/2,by+8,{align:'center'});
+      doc.setFont('times','normal');doc.setFontSize(7);
+      doc.setTextColor(isBold?200:80,isBold?200:80,isBold?200:80);
+      doc.text(ld[0],bx+bW/2,by+12.5,{align:'center'});
+    });
+    y+=40;
+
+    // ── TIEMPOS Y SATISFACCIÓN ──
+    y=checkY(y,60);
+    y=secHdr(y,'4. TIEMPOS, SATISFACCIÓN Y CALIDAD',[0,80,100]);
+    var tGest=s.t_gestion||0,tResp=s.t_respuesta||0;
+    var csat=s.csat||0,nps=s.nps||0,snc=s.snc_total||0,pqrs=s.pqrs_rec||0;
+    var tsData=[
+      ['T. Gestión leads',tGest+'h','≤ 3h',tGest>0&&tGest<=3?[22,101,52]:[180,30,30]],
+      ['T. Respuesta crédito',tResp+'h','≤ 72h',tResp>0&&tResp<=72?[22,101,52]:[180,30,30]],
+      ['CSAT',csat+'%','100%',csat>=100?[22,101,52]:csat>=90?[161,98,7]:[180,30,30]],
+      ['NPS',nps+'%','≥ 90%',nps>=90?[22,101,52]:nps>=70?[161,98,7]:[180,30,30]],
+      ['SNC (No Conformes)',snc,'0',snc===0?[22,101,52]:[180,30,30]],
+      ['PQRS recibidas',pqrs,'0',pqrs===0?[22,101,52]:[180,30,30]],
+    ];
+    doc.setFillColor(230,240,245);doc.rect(mL,y,cW,7,'FD');
+    doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(0,61,69);
+    doc.text('Indicador',mL+2,y+4.8);doc.text('Resultado',mL+cW*0.38+2,y+4.8);
+    doc.text('Meta',mL+cW*0.58+2,y+4.8);doc.text('Estado',mL+cW*0.78+2,y+4.8);
+    y+=7;
+    tsData.forEach(function(row){y=kpiRow(y,row[0],row[1],row[2],row[3]&&row[3][0]===22?'✓ En meta':'⚠ Fuera meta',row[3]);});
+    y+=4;
+
+    // ── ACTIVIDADES ──
+    y=checkY(y,40);
+    y=secHdr(y,'5. ACTIVIDADES COMERCIALES',[60,80,0]);
+    var actPlan=s.act_plan||0,actEjec=s.act_ejec||0;
+    var pctAct=actPlan>0?(actEjec/actPlan*100):0;
+    var anticipo=s.anticipo_val||0;
+    y=kpiRow(y,'Actividades planteadas',actPlan,'---','---',[100,100,100]);
+    y=kpiRow(y,'Actividades ejecutadas',actEjec,actPlan,pctAct.toFixed(1)+'%',semColor(actEjec,actPlan));
+    y=kpiRow(y,'Anticipo solicitado','$'+anticipo.toLocaleString('es-CO'),'---','---',[100,100,100]);
+    y=kpiRow(y,'Calificación seguimiento',(s.calif_seguimiento||'---')+'/10','≥ 8',s.calif_seguimiento>=8?'✓ Aprobado':'⚠ Revisar',s.calif_seguimiento>=8?[22,101,52]:[180,30,30]);
+    y+=4;
+
+    // ── EVOLUCIÓN MENSUAL visual ──
+    y=checkY(y,50);
+    y=secHdr(y,'6. EVOLUCIÓN MENSUAL Y PROYECCIÓN',[0,61,100]);
+    var meses=getMesesSeleccionados?getMesesSeleccionados():[];
+    if(meses.length>0&&typeof evolucionData!=='undefined'){
+      // Mini bar chart in PDF
+      var barW=Math.min(20,(cW-10)/meses.length);
+      var chartX=mL;
+      meses.forEach(function(mes2){
+        var ev=evolucionData[mes2]||{};
+        var rn=ev.real_n||0;
+        var mn=getMetaAcumulada?getMetaAcumulada(state.sedes||[],[mes2]).n||1:1;
+        var p=Math.min(100,rn/mn*100);
+        var c=p>=90?[22,101,52]:p>=70?[161,98,7]:[180,30,30];
+        var maxH=30;
+        var bH=maxH*p/100;
+        doc.setFillColor(235,235,235);doc.rect(chartX,y+maxH-maxH,barW-3,maxH,'F');
+        if(bH>0){doc.setFillColor(c[0],c[1],c[2]);doc.rect(chartX,y+maxH-bH,barW-3,bH,'F');}
+        doc.setFont('times','normal');doc.setFontSize(6.5);doc.setTextColor(60,60,60);
+        doc.text(mes2.substring(0,3),chartX+(barW-3)/2,y+maxH+4,{align:'center'});
+        doc.text(p.toFixed(0)+'%',chartX+(barW-3)/2,y+maxH+8,{align:'center'});
+        chartX+=barW;
+      });
+      y+=45;
+    }
+
+  } else {
+    // ── ASESOR KPIs ──
+    y=checkY(y,60);
+    y=secHdr(y,'1. GESTIÓN DE LEADS — ASESOR');
+    doc.setFillColor(230,240,245);doc.rect(mL,y,cW,7,'FD');
+    doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(0,61,69);
+    doc.text('Indicador',mL+2,y+4.8);doc.text('Resultado',mL+cW*0.38+2,y+4.8);
+    doc.text('Meta',mL+cW*0.58+2,y+4.8);doc.text('Estado',mL+cW*0.78+2,y+4.8);
+    y+=7;
+    var asig=s.a_leads_asig||0,conv=s.a_leads_conv||0,venc=s.a_leads_venc||0;
+    var tcAsesor=asig>0?(conv/asig*100):0;
+    y=kpiRow(y,'Leads asignados',asig,'---','---',[100,100,100]);
+    y=kpiRow(y,'Leads gestionados',s.a_leads_gest||0,asig,asig>0?((s.a_leads_gest||0)/asig*100).toFixed(1)+'%':null,semColor(s.a_leads_gest||0,asig));
+    y=kpiRow(y,'Leads vencidos',venc,'0',venc===0?'✓ Sin vencidos':'⚠ '+venc+' vencidos',venc===0?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'Leads convertidos',conv,asig,tcAsesor.toFixed(1)+'%',semColor(conv,asig));
+    y=kpiRow(y,'T. Respuesta asesor',(s.a_t_respuesta||0)+'h','≤ 3h',(s.a_t_respuesta||0)<=3?'✓ En meta':'⚠ Fuera meta',(s.a_t_respuesta||0)<=3?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'Chats atendidos',s.a_chats||0,'---','---',[100,100,100]);
+    y=kpiRow(y,'Chats tipificados',s.a_chats_tip||0,s.a_chats||0,s.a_chats>0?((s.a_chats_tip||0)/s.a_chats*100).toFixed(1)+'%':null,semColor(s.a_chats_tip||0,s.a_chats||1));
+    y+=4;
+
+    y=checkY(y,60);
+    y=secHdr(y,'2. NEGOCIOS E IMAGEN',[0,80,100]);
+    var negAsig=s.a_neg_asig||0,negFact=s.a_neg_fact||0,negPerd=s.a_neg_perd||0,negRecup=s.a_neg_recup||0;
+    var pctNeg=negAsig>0?(negFact/negAsig*100):0;
+    y=kpiRow(y,'Negocios asignados',negAsig,'---','---',[100,100,100]);
+    y=kpiRow(y,'Negocios facturados',negFact,negAsig,pctNeg.toFixed(1)+'%',semColor(negFact,negAsig));
+    y=kpiRow(y,'Negocios perdidos',negPerd,'0',negPerd===0?'✓ Sin pérdidas':'⚠ '+negPerd+' perdidos',negPerd===0?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'Negocios recuperados',negRecup,negPerd,negPerd>0?(negRecup/negPerd*100).toFixed(1)+'%':null,[100,100,100]);
+    y+=4;
+
+    y=checkY(y,50);
+    y=secHdr(y,'3. EVALUACIÓN DE IMAGEN Y ACTITUD',[60,40,100]);
+    var evalData=[
+      ['Dotación',s.dotacion||'---'],['Presentación personal',s.a_presentacion||'---'],
+      ['Actitud y disposición',s.a_actitud||'---'],['Conocimiento del producto',s.conocimiento||'---'],
+      ['Manejo de objeciones',s.objeciones||'---'],['Trabajo en equipo',s.trabajo_equipo||'---'],
+    ];
+    evalData.forEach(function(row){
+      y=checkY(y,8);
+      doc.setFillColor(248,250,252);doc.rect(mL,y,cW*0.5,8,'F');
+      doc.setFont('times','bold');doc.setFontSize(7.5);doc.setTextColor(60,60,60);
+      doc.text(row[0],mL+2,y+5.5);
+      doc.setFont('times','normal');doc.setTextColor(0,0,0);
+      doc.text(String(row[1]),mL+cW*0.5+3,y+5.5);
+      doc.setDrawColor(220,220,220);doc.line(mL,y+8,mL+cW,y+8);
+      y+=8;
+    });
+    y+=4;
+
+    y=checkY(y,40);
+    y=secHdr(y,'4. CALIDAD Y SERVICIO',[0,80,80]);
+    y=kpiRow(y,'CSAT asesor',(s.csat_asesor||0)+'%','100%',(s.csat_asesor||0)>=100?'✓ Óptimo':'⚠ Revisar',(s.csat_asesor||0)>=100?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'SNC asesor',s.a_snc_total||0,'0',(s.a_snc_total||0)===0?'✓ Sin novedades':'⚠ Atender',(s.a_snc_total||0)===0?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'PQRS asesor',s.a_pqrs_rec||0,'0',(s.a_pqrs_rec||0)===0?'✓ Sin novedades':'⚠ Gestionar',(s.a_pqrs_rec||0)===0?[22,101,52]:[180,30,30]);
+    y=kpiRow(y,'Calificación general',(s.a_calificacion||0)+'/10','≥ 8',(s.a_calificacion||0)>=8?'✓ Satisfactorio':'⚠ Plan de mejora',(s.a_calificacion||0)>=8?[22,101,52]:[180,30,30]);
+    y+=4;
+  }
+
+  // ── OBSERVACIONES Y PENDIENTES ──
+  y=checkY(y,40);
+  y=secHdr(y,'OBSERVACIONES Y PENDIENTES',[80,40,0]);
+  var obs=s.observaciones||s.plan_accion||'Sin observaciones registradas.';
+  var pend=s.pendientes||'Sin pendientes registrados.';
+  doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(80,80,80);
+  doc.text('Observaciones:',mL,y+4);y+=6;
+  doc.setFillColor(255,250,240);doc.rect(mL,y,cW,Math.min(30,obs.length/5+8),'F');
+  doc.setFont('times','normal');doc.setFontSize(8);doc.setTextColor(40,40,40);
+  var obsLines=doc.splitTextToSize(obs,cW-4);
+  doc.text(obsLines,mL+2,y+5);y+=Math.min(30,obs.length/5+12);
+  y=checkY(y,20);
+  doc.setFont('times','bold');doc.setFontSize(8);doc.setTextColor(80,80,80);
+  doc.text('Pendientes y compromisos:',mL,y+4);y+=6;
+  doc.setFillColor(240,248,255);doc.rect(mL,y,cW,Math.min(25,pend.length/5+8),'F');
+  doc.setFont('times','normal');doc.setFontSize(8);doc.setTextColor(40,40,40);
+  var pendLines=doc.splitTextToSize(pend,cW-4);
+  doc.text(pendLines,mL+2,y+5);y+=Math.min(25,pend.length/5+12);
+
+  // ── FIRMA ──
+  y=checkY(y,25);
+  y+=6;
+  doc.setDrawColor(0,61,69);doc.setLineWidth(0.6);doc.line(mL,y,mL+65,y);
+  doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(0,61,69);
+  doc.text(ejecutor,mL,y+5);
+  doc.setFont('times','normal');doc.setFontSize(8);doc.setTextColor(60,60,60);
+  doc.text(cargo,mL,y+10);
+  doc.text('Proceso PYV — Cooperativa Minuto de Dios',mL,y+15);
+
+  // Footer all pages
+  var total=doc.getNumberOfPages();
+  for(var p=1;p<=total;p++){
+    doc.setPage(p);
+    doc.setFontSize(6.5);doc.setFont('times','italic');doc.setTextColor(255,255,255);
+    doc.text('(c) 2026 Juan Orrego · Proceso PYV Comercial · Cooperativa Minuto de Dios · DOCUMENTO CONFIDENCIAL',mL,pH-2);
+    doc.setFontSize(7);doc.setFont('times','bold');doc.setTextColor(0,61,69);
+    doc.text('Pág. '+p+'/'+total,pW-mR,pH-2,{align:'right'});
+  }
+
+  doc.save('Informe_Seguimiento_'+modoLabel+'_'+sede.replace(/[\s,\/]/g,'_')+'_'+mes+'_'+anio+'_'+new Date().toISOString().split('T')[0]+'.pdf');
+  mostrarAlertaNav('Informe completo generado — '+total+' página(s).');
+}
+
+
+function abrirAppsMenu(){
+  var el=document.getElementById('modal-apps-cmd');
+  if(!el){console.error('modal-apps-cmd not found');return;}
+  document.body.appendChild(el);
+  el.removeAttribute('style');
+  el.style.cssText='display:block !important;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;overflow-y:auto;padding:20px';
+}
+function cerrarAppsMenu(){
+  var el=document.getElementById('modal-apps-cmd');
+  if(el)el.style.display='none';
+}
+
+
+function setBreadcrumb(nivel1, nivel2){
+  var sep1=document.getElementById('bc-sep1');
+  var n1=document.getElementById('bc-nivel1');
+  var sep2=document.getElementById('bc-sep2');
+  var n2=document.getElementById('bc-nivel2');
+  if(nivel1){
+    if(n1) n1.textContent=nivel1;
+    if(n1) n1.style.display='inline';
+    if(sep1) sep1.style.display='inline';
+  } else {
+    if(n1) n1.style.display='none';
+    if(sep1) sep1.style.display='none';
+  }
+  if(nivel2){
+    if(n2) n2.textContent=nivel2;
+    if(n2) n2.style.display='inline';
+    if(sep2) sep2.style.display='inline';
+  } else {
+    if(n2) n2.style.display='none';
+    if(sep2) sep2.style.display='none';
+  }
+}
+function resetBreadcrumb(){setBreadcrumb(null,null);}
+
+
+// ══════════════════════════════════════════════
+// SELECTOR DE EMPLEADOS REUTILIZABLE
+// ══════════════════════════════════════════════
+
+
+
+
+
+// ── MULTI-ASESOR CARTA METAS ──
+var asesoresSeleccionados = [];
+
+function agregarAsesorCarta(emp){
+  if(asesoresSeleccionados.length>=10){mostrarAlertaNav('Maximo 10.');return;}
+  if(asesoresSeleccionados.find(function(a){return a.correo===emp.correo;})){mostrarAlertaNav(emp.nombre+' ya esta.');return;}
+  asesoresSeleccionados.push(emp);renderAsesoresTags();
+  var n=document.getElementById('carta-asesor-num');if(n)n.value=asesoresSeleccionados.length;
+}
+function removerAsesorCarta(correo){
+  asesoresSeleccionados=asesoresSeleccionados.filter(function(a){return a.correo!==correo;});
+  renderAsesoresTags();
+  var n=document.getElementById('carta-asesor-num');if(n)n.value=asesoresSeleccionados.length;
+}
+function renderAsesoresTags(){
+  var c=document.getElementById('asesores-seleccionados');
+  if(!c)return;
+  if(!asesoresSeleccionados.length){c.innerHTML='<span style="font-size:11px;color:var(--text2);padding:4px">Sin asesores</span>';return;}
+  c.innerHTML='';
+  asesoresSeleccionados.forEach(function(emp){
+    var d2=document.createElement('div');
+    d2.style.cssText='display:flex;align-items:center;gap:5px;background:var(--teal-l);border:1px solid var(--teal);border-radius:20px;padding:3px 10px;font-size:11px';
+    var sp=document.createElement('span');sp.style.cssText='color:var(--dark);font-weight:600';
+    sp.textContent=emp.nombre.split(' ').filter(function(p){return p.length>2;}).slice(-2).join(' ');
+    var btn=document.createElement('button');btn.style.cssText='background:none;border:none;cursor:pointer;color:var(--teal-d);font-size:14px;padding:0 0 0 4px';
+    btn.textContent='x';
+    (function(cr){btn.addEventListener('click',function(){removerAsesorCarta(cr);});})(emp.correo);
+    d2.appendChild(sp);d2.appendChild(btn);c.appendChild(d2);
+  });
+}
+function generarCartaMetasMultiAsesor(){
+  if(typeof window.jspdf==='undefined'){mostrarAlertaNav('Cargando...');return;}
+  var jP=window.jspdf.jsPDF;
+  var doc=new jP({orientation:'portrait',unit:'mm',format:'letter'});
+  asesoresSeleccionados.forEach(function(emp,idx){
+    if(idx>0)doc.addPage();
+    _drawCartaPage(doc,{nombre:emp.nombre,cargo:emp.cargo,sede:emp.sede,
+      periodo:document.getElementById('carta-asesor-periodo')?.value||'---',
+      metaN:document.getElementById('carta-asesor-meta-n')?.value||'0',
+      metaV:document.getElementById('carta-asesor-meta-v')?.value||'0',
+      compromisos:document.getElementById('carta-asesor-compromisos')?.value||''});
+  });
+  doc.save('CartaMetas_'+asesoresSeleccionados.length+'_Asesores.pdf');
+  mostrarAlertaNav('Cartas de '+asesoresSeleccionados.length+' asesor(es) generadas.');
+}
+function _drawCartaPage(doc,d){
+  var pW=doc.internal.pageSize.width,pH=doc.internal.pageSize.height,mL=25,mR=25,cW=pW-mL-mR;
+  doc.setFillColor(0,61,69);doc.rect(0,0,pW,28,'F');
+  doc.setFillColor(0,176,185);doc.ellipse(pW*0.22,0,pW*0.22,22,'F');
+  doc.setFillColor(255,217,0);doc.ellipse(pW*0.42,0,20,18,'F');
+  doc.setFillColor(174,201,0);doc.ellipse(pW,0,26,26,'F');
+  doc.setFillColor(0,176,185);doc.rect(0,pH-7,pW*0.6,7,'F');
+  doc.setFillColor(255,217,0);doc.rect(pW*0.6,pH-7,pW*0.2,7,'F');
+  doc.setFillColor(174,201,0);doc.rect(pW*0.8,pH-7,pW*0.2,7,'F');
+  try{doc.addImage(LOGO_B64,'PNG',pW-64,2,52,14);}catch(e){}
+  doc.setFont('times','bold');doc.setFontSize(14);doc.setTextColor(255,255,255);
+  doc.text('CARTA DE METAS COMERCIALES',pW/2,12,{align:'center'});
+  doc.setFont('times','italic');doc.setFontSize(8);doc.setTextColor(255,217,0);
+  doc.text('Proceso Preventa y Venta - Cooperativa Minuto de Dios',pW/2,19,{align:'center'});
+  var y=36;
+  doc.setFont('times','normal');doc.setFontSize(9);doc.setTextColor(40,40,40);
+  doc.text('Medellin, '+new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}),pW-mR,y,{align:'right'});y+=10;
+  [['Senor(a):',d.nombre,24],['Cargo:',d.cargo,18],['Sede:',d.sede,16],['Periodo:',d.periodo,22]].forEach(function(r){
+    doc.setFont('times','bold');doc.setFontSize(11);doc.setTextColor(0,61,69);doc.text(r[0],mL,y);
+    doc.setFont('times','normal');doc.setTextColor(40,40,40);doc.text(String(r[1]),mL+r[2],y);y+=7;
+  });
+  y+=5;
+  doc.setFont('times','normal');doc.setFontSize(10);doc.setTextColor(40,40,40);
+  doc.text(doc.splitTextToSize('Por medio de la presente comunicamos las metas asignadas para el periodo '+d.periodo+'.',cW),mL,y,{lineHeightFactor:1.6});y+=18;
+  doc.setFillColor(0,61,69);doc.rect(mL,y,cW,8,'F');doc.setFillColor(255,217,0);doc.rect(mL,y,5,8,'F');
+  doc.setFont('times','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('METAS ASIGNADAS',pW/2,y+5.5,{align:'center'});y+=10;
+  doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);
+  doc.rect(mL,y,cW/2,10);doc.rect(mL+cW/2,y,cW/2,10);
+  doc.setFont('times','bold');doc.setFontSize(9);doc.setTextColor(60,60,60);
+  doc.text('Creditos',mL+3,y+4);doc.text('Valor ($)',mL+cW/2+3,y+4);y+=10;
+  doc.rect(mL,y,cW/2,12);doc.rect(mL+cW/2,y,cW/2,12);
+  doc.setFont('times','bold');doc.setFontSize(14);doc.setTextColor(0,61,69);
+  doc.text(String(d.metaN||0),mL+cW/4,y+8.5,{align:'center'});
+  doc.text('$'+parseFloat(d.metaV||0).toLocaleString('es-CO'),mL+cW*0.75,y+8.5,{align:'center'});y+=16;
+  if(d.compromisos){
+    doc.setFillColor(0,61,69);doc.rect(mL,y,cW,8,'F');doc.setFillColor(255,217,0);doc.rect(mL,y,5,8,'F');
+    doc.setFont('times','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('COMPROMISOS',pW/2,y+5.5,{align:'center'});y+=10;
+    doc.setFont('times','normal');doc.setFontSize(9);doc.setTextColor(40,40,40);
+    var cL=doc.splitTextToSize(d.compromisos,cW-4);doc.text(cL,mL+2,y+4);y+=cL.length*5.5+8;
+  }
+  y=Math.max(y,pH-55);
+  doc.text('Atentamente,',mL,y);y+=18;
+  doc.setDrawColor(0,61,69);doc.line(mL,y,mL+70,y);y+=5;
+  doc.setFont('times','bold');doc.text('Vanesa Salgar',mL,y);y+=5;
+  doc.setFont('times','normal');doc.text('Directora Comercial - Cooperativa Minuto de Dios',mL,y);
+  doc.setFontSize(6.5);doc.setFont('times','italic');doc.setTextColor(255,255,255);
+  doc.text('(c) 2026 Juan Orrego - PYV - Cooperativa Minuto de Dios',mL,pH-2.5);
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// SELECTOR EMPLEADOS — EVENT DELEGATION (PROBADO)
+// ══════════════════════════════════════════════════════════════
+var _empSel = {
+  dd: null,
+  activeId: null,
+  registry: {
+    'coordinador': {
+      filter: 'coord',
+      onSelect: function(emp){
+        var el=document.getElementById('coordinador');
+        if(el) el.value=emp.nombre;
+        state.coordinador=emp.nombre;
+        state.coordinadorCedula=emp.cedula;
+        state.coordinadorCorreo=emp.correo;
+      }
+    },
+    'asesor-nombre': {
+      filter: 'asesor',
+      onSelect: function(emp){
+        var el=document.getElementById('asesor-nombre');
+        if(el) el.value=emp.nombre;
+        state.asesor_nombre=emp.nombre;
+        state.asesor_cedula=emp.cedula;
+        state.asesor_correo=emp.correo;
+        state.asesor_cargo=emp.cargo;
+        var c=document.getElementById('asesor-cargo');
+        if(c) c.value=emp.cargo;
+      }
+    },
+    'asesor-coord': {
+      filter: 'coord',
+      onSelect: function(emp){
+        var el=document.getElementById('asesor-coord');
+        if(el) el.value=emp.nombre;
+        state.coordinador_asesor=emp.nombre;
+        state.coordinador_asesor_cedula=emp.cedula;
+        state.coordinador_asesor_correo=emp.correo;
+      }
+    }
+  }
+};
+
+function _empGetDd(){
+  if(!_empSel.dd){
+    var d=document.createElement('div');
+    d.id='emp-global-dd';
+    d.style.cssText='position:fixed;background:#fff;border:2px solid var(--teal);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999999;max-height:240px;overflow-y:auto;display:none;min-width:280px';
+    document.body.appendChild(d);
+    document.addEventListener('mousedown',function(ev){
+      if(!d.contains(ev.target)){
+        var ae=_empSel.activeId?document.getElementById(_empSel.activeId):null;
+        if(!ae||!ae.contains(ev.target)) _empHideDd();
+      }
+    });
+    _empSel.dd=d;
+  }
+  return _empSel.dd;
+}
+
+function _empHideDd(){
+  if(_empSel.dd) _empSel.dd.style.display='none';
+  _empSel.activeId=null;
+}
+
+function _empShowDd(inputEl, query, config){
+  var dd=_empGetDd();
+  var q=(query||'').toLowerCase().trim();
+  if(q.length<2){dd.style.display='none';return;}
+  var results=Object.values(EMPLEADOS_BD).filter(function(e){
+    if(config.filter==='coord') return e.cargo&&e.cargo.toLowerCase().indexOf('coordinador')>=0;
+    if(config.filter==='asesor') return e.cargo&&e.cargo.toLowerCase().indexOf('asesor')>=0;
+    return true;
+  }).filter(function(e){
+    return (e.nombre&&e.nombre.toLowerCase().indexOf(q)>=0)
+      || (e.sede&&e.sede.toLowerCase().indexOf(q)>=0)
+      || (e.correo&&e.correo.indexOf(q)>=0);
+  }).slice(0,12);
+  if(!results.length){dd.style.display='none';return;}
+  // Build items using DOM (no innerHTML with variables)
+  dd.innerHTML='';
+  results.forEach(function(emp){
+    var item=document.createElement('div');
+    item.style.cssText='padding:9px 14px;cursor:pointer;border-bottom:1px solid #f3f4f6';
+    var n=document.createElement('div');
+    n.style.cssText='font-size:13px;font-weight:700;color:var(--dark)';
+    n.textContent=emp.nombre;
+    var s=document.createElement('div');
+    s.style.cssText='font-size:11px;color:var(--text2);margin-top:2px';
+    s.textContent=emp.cargo+' · '+emp.sede;
+    item.appendChild(n);item.appendChild(s);
+    item.addEventListener('mouseover',function(){item.style.background='var(--teal-l)';});
+    item.addEventListener('mouseout',function(){item.style.background='';});
+    item.addEventListener('mousedown',function(ev){
+      ev.preventDefault();
+      inputEl.value=emp.nombre;
+      _empHideDd();
+      if(config.onSelect) config.onSelect(emp);
+    });
+    dd.appendChild(item);
+  });
+  var rect=inputEl.getBoundingClientRect();
+  dd.style.top=(rect.bottom+3)+'px';
+  dd.style.left=rect.left+'px';
+  dd.style.width=Math.max(280,rect.width)+'px';
+  dd.style.display='block';
+}
+
+// Global delegation — works even if fields are hidden at registration time
+document.addEventListener('input',function(e){
+  var cfg=_empSel.registry[e.target.id];
+  if(!cfg||e.target.readOnly) return;
+  _empSel.activeId=e.target.id;
+  _empShowDd(e.target,e.target.value,cfg);
+},true);
+document.addEventListener('focus',function(e){
+  var cfg=_empSel.registry[e.target.id];
+  if(!cfg||e.target.readOnly) return;
+  if(e.target.value.length>=2){_empSel.activeId=e.target.id;_empShowDd(e.target,e.target.value,cfg);}
+},true);
+document.addEventListener('blur',function(e){
+  var id=e.target.id;
+  if(!_empSel.registry[id]) return;
+  setTimeout(function(){if(_empSel.activeId===id)_empHideDd();},200);
+},true);
+
+// crearSelectorEmpleado — compatibility for carta metas
+function crearSelectorEmpleado(inputEl, opts){
+  if(!inputEl) return;
+  if(!inputEl.id) inputEl.id='empsel_'+Date.now();
+  _empSel.registry[inputEl.id]=opts;
+}
+
+// initEmpSelectors — fills readonly fields only
+function initEmpSelectors(){
+  ['ejecutor','ejecutor-asesor'].forEach(function(eid){
+    var el=document.getElementById(eid);
+    if(el){
+      el.value=navState.nombreEjecutor||'';
+      el.readOnly=true;
+      el.style.cssText='background:#f0fdf4;border:1.5px solid var(--teal);font-weight:700;color:var(--dark);padding:8px 10px;border-radius:8px;width:100%;font-family:Ubuntu,sans-serif;font-size:13px';
+    }
+  });
+}
+
 window.addEventListener('load',init);
 
 
@@ -7086,6 +8676,61 @@ window.addEventListener('load',init);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function iniciarSeguimientoCoord(){
+  if(!sesionActiva){ mostrarAlertaNav('Inicia sesion primero.'); return; }
+  seleccionarModo('coord');
+  navState.h0Completada=true;
+  applyNavState();
+  irEtapaSeguimiento();
+  setTimeout(function(){
+    activateSheet('h1', document.querySelectorAll('.tab')[1]);
+    setBreadcrumb('Seguimiento','Coordinacion');
+    // Auto-fill ejecutor with logged-in user
+    var ejEl=document.getElementById('ejecutor');
+    if(ejEl) ejEl.value=navState.nombreEjecutor||'';
+    // Re-init selectors for H1
+    if(typeof initEmpSelectors==='function') initEmpSelectors();
+    mostrarAlertaNav('Seguimiento Coordinacion iniciado. Completa las metas en Hoja 1.');
+  }, 300);
+}
+function iniciarSeguimientoAsesor(){
+  if(!sesionActiva){ mostrarAlertaNav('Inicia sesion primero.'); return; }
+  seleccionarModo('asesor');
+  navState.h0Completada=true;
+  applyNavState();
+  irEtapaSeguimiento();
+  setTimeout(function(){
+    activateSheet('h1', document.querySelectorAll('.tab')[1]);
+    setBreadcrumb('Seguimiento','Asesor');
+    // Auto-fill ejecutor with logged-in user
+    var ejEl=document.getElementById('ejecutor');
+    if(ejEl) ejEl.value=navState.nombreEjecutor||'';
+    if(typeof initEmpSelectors==='function') initEmpSelectors();
+    mostrarAlertaNav('Seguimiento Asesor iniciado. Completa las metas en Hoja 1.');
+  }, 300);
+}
 
 
 
@@ -7151,6 +8796,428 @@ window.addEventListener('load',init);
         <button onclick="exportarAnticipoExcel()" class="btn" style="background:#166534;color:#fff;border-color:#166534"><i class="ti ti-file-spreadsheet"></i> Exportar Excel</button>
         <button onclick="enviarCorreoAnticipo()" class="btn" style="background:#0078d4;color:#fff;border-color:#0078d4"><i class="ti ti-mail"></i> Enviar correo</button>
         <button onclick="cerrarCalculadoraAnticipo()" class="btn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL APPS COOPERATIVA -->
+<div id="modal-apps-cmd" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;overflow-y:auto;padding:20px">
+  <div style="background:#fff;border-radius:18px;max-width:720px;margin:0 auto;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,var(--dark) 0%,#005a66 100%);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="color:var(--yellow);font-size:15px;font-weight:700"><i class="ti ti-apps"></i> Aplicaciones Cooperativa Minuto de Dios</div>
+        <div style="color:rgba(255,255,255,.6);font-size:11px;margin-top:2px">Acceso directo a los sistemas del proceso comercial PYV</div>
+      </div>
+      <button onclick="cerrarAppsMenu()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px">✕</button>
+    </div>
+    <!-- Grid apps -->
+    <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+
+      <!-- Crédito y portafolio -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px">Crédito y Portafolio</div>
+
+      <a href="https://coopminutodedios.coxti.com/administrator/list-credits" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:var(--teal-l);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-search" style="color:var(--teal-d);font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">OnCredit Consulta</div>
+          <div style="font-size:10px;color:var(--text2)">Consulta de créditos</div>
+        </div>
+      </a>
+
+      <a href="https://coopminutodedios.coxti.com/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:var(--teal-l);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-file-plus" style="color:var(--teal-d);font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">OnCredit Radicación</div>
+          <div style="font-size:10px;color:var(--text2)">Radicación de solicitudes</div>
+        </div>
+      </a>
+
+      <a href="https://coopminutodedios.com/solicitud-de-reintegro/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:var(--teal-l);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-rotate-clockwise" style="color:var(--teal-d);font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Solicitud de Reintegro</div>
+          <div style="font-size:10px;color:var(--text2)">Portal cooperativa</div>
+        </div>
+      </a>
+
+      <a href="https://coopminutodedios.com/autorizacion-consulta-centrales-de-riesgo/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:var(--teal-l);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-shield-check" style="color:var(--teal-d);font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Autorizacion Centrales</div>
+          <div style="font-size:10px;color:var(--text2)">Consulta de riesgo</div>
+        </div>
+      </a>
+
+      <a href="https://coopminutodedios.com/solicitud-de-excepciones/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:var(--teal-l);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-adjustments" style="color:var(--teal-d);font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Solicitud Excepciones</div>
+          <div style="font-size:10px;color:var(--text2)">Portal cooperativa</div>
+        </div>
+      </a>
+
+      <!-- Verificación y riesgo -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px;margin-top:4px">Verificación y Riesgo</div>
+
+      <a href="https://apps.datacredito.com.co/raw/user-account/login/web/index" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#f5f3ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-id-badge" style="color:#7c3aed;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">DataCrédito</div>
+          <div style="font-size:10px;color:var(--text2)">Centrales de riesgo</div>
+        </div>
+      </a>
+
+      <a href="https://www.consultalistaspeps.com/ClientArea/COOPCENTRAL/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#f5f3ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-list-check" style="color:#7c3aed;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">COOPCENTRAL PEPS</div>
+          <div style="font-size:10px;color:var(--text2)">Consulta listas</div>
+        </div>
+      </a>
+
+      <a href="https://www.icetex.gov.co/portalacces/index.asp?visible=4&strNivel=1&IdAplicaMenu=1" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#f5f3ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-school" style="color:#7c3aed;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">ICETEX C&CTEX</div>
+          <div style="font-size:10px;color:var(--text2)">Sistema de información</div>
+        </div>
+      </a>
+
+      <!-- Gestión y sistemas -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px;margin-top:4px">Gestión y Sistemas</div>
+
+      <a href="https://suites.l2kcuruba.com/CoopMD360/servlet/com.link2knowgx16.wwpbaseobjects.home" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fffbeb;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-database" style="color:#d97706;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Curuba CoopMD360</div>
+          <div style="font-size:10px;color:var(--text2)">Sistema de gestión</div>
+        </div>
+      </a>
+
+      <a href="https://coopminutodedios.isolucion.co/PaginaLogin.aspx" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fffbeb;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-settings" style="color:#d97706;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Isolución</div>
+          <div style="font-size:10px;color:var(--text2)">SGC y procesos</div>
+        </div>
+      </a>
+
+      <a href="https://soporte.coopminutodedios.com" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fffbeb;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-headset" style="color:#d97706;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">GLPI Soporte</div>
+          <div style="font-size:10px;color:var(--text2)">Mesa de ayuda TI</div>
+        </div>
+      </a>
+
+      <a href="https://nocoopminuto.cloudzeusapp.com/public/applogin.aspx" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fffbeb;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-users" style="color:#d97706;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Zeus Nómina</div>
+          <div style="font-size:10px;color:var(--text2)">Gestión de nómina</div>
+        </div>
+      </a>
+
+      <a href="https://www.kawak.com.co/coopminutodedios/index.php?ref=bWFpbi9ob21lLnBocA==&exp=1" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#d97706';this.style.background='#fffbeb'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fffbeb;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-shield" style="color:#d97706;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Kawak SST</div>
+          <div style="font-size:10px;color:var(--text2)">Matriz seguridad</div>
+        </div>
+      </a>
+
+      <!-- Atención y comunicación -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px;margin-top:4px">Atención y Comunicación</div>
+
+      <a href="https://cooperativaminutosde.mytalkdesk.com/atlas/apps/conversation?continue" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#dc2626';this.style.background='#fef2f2'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fef2f2;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-phone-call" style="color:#dc2626;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Talkdesk</div>
+          <div style="font-size:10px;color:var(--text2)">Centro de llamadas</div>
+        </div>
+      </a>
+
+      <a href="https://app.hubspot.com/login/?loginRedirectUrl=https%3A%2F%2Fapp.hubspot.com%2Fforms%2F48684571%2Fviews%2Fall_forms&authFailureReason=Session%20timed%20out&loginPortalId=48684571" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#dc2626';this.style.background='#fef2f2'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fef2f2;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-rocket" style="color:#dc2626;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">HubSpot CRM</div>
+          <div style="font-size:10px;color:var(--text2)">Formularios y CRM</div>
+        </div>
+      </a>
+
+      <!-- Formación -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px;margin-top:4px">Formación y Documentación</div>
+
+      <a href="https://aulas.coopminutodedios.com.co/moodle/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#059669';this.style.background='#ecfdf5'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#ecfdf5;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-book" style="color:#059669;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Moodle Aulas</div>
+          <div style="font-size:10px;color:var(--text2)">Plataforma formación</div>
+        </div>
+      </a>
+
+      <a href="https://forms.office.com/pages/responsepage.aspx?id=EkBKnUCd802TLEJuKO1O3AOZkEXItEdHtL-mp8WiPKxUM0NBNUw1VThUNUNXOUxMSTUxNzVFUzJSMy4u&route=shorturl" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#059669';this.style.background='#ecfdf5'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#ecfdf5;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-file-description" style="color:#059669;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Documentos SGC</div>
+          <div style="font-size:10px;color:var(--text2)">Formularios Office</div>
+        </div>
+      </a>
+
+      <!-- Cafetería -->
+      <div style="grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:-4px;margin-top:4px">Servicios Internos</div>
+
+      <a href="https://www.pedidoskopancoba.com/pedidosV2/web/" target="_blank" onclick="cerrarAppsMenu()"
+        style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;text-decoration:none;transition:.2s;background:#fff"
+        onmouseover="this.style.borderColor='#92400e';this.style.background='#fef3c7'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+        <div style="width:36px;height:36px;background:#fef3c7;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ti-coffee" style="color:#92400e;font-size:18px"></i>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">Pedidos Cafetería</div>
+          <div style="font-size:10px;color:var(--text2)">Sistema Kopancoba</div>
+        </div>
+      </a>
+
+    </div>
+    <!-- Footer -->
+    <div style="padding:12px 24px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:10px;color:var(--text2)">17 aplicaciones · Proceso PYV — Cooperativa Minuto de Dios</div>
+      <button onclick="cerrarAppsMenu()" class="btn" style="padding:8px 18px;font-size:12px">Cerrar</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL PREVIO ACTA SGC-FR-04 -->
+<div id="modal-acta-previa" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99998;overflow-y:auto;padding:20px">
+  <div style="background:#fff;border-radius:18px;max-width:620px;margin:0 auto;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3)">
+    <div style="background:linear-gradient(135deg,#003D45,#005a66);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="color:var(--yellow);font-size:13px;font-weight:700">SG-FR-04 · Acta de Reunión</div>
+        <div style="color:rgba(255,255,255,.6);font-size:11px;margin-top:2px">Completa la información antes de generar el acta oficial</div>
+      </div>
+      <button onclick="cerrarActaPrevia()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px">✕</button>
+    </div>
+    <div style="padding:20px 24px">
+
+      <!-- N° Acta y Fecha -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="field">
+          <label>N° de Acta</label>
+          <input type="text" id="acta-numero" placeholder="Ej: PYV-2026-001">
+        </div>
+        <div class="field">
+          <label>Fecha de la reunión</label>
+          <input type="date" id="acta-fecha">
+        </div>
+      </div>
+
+      <!-- Hora inicio / fin -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="field">
+          <label>Lugar</label>
+          <input type="text" id="acta-lugar" placeholder="Sede o virtual">
+        </div>
+        <div class="field">
+          <label>Hora inicio</label>
+          <input type="time" id="acta-hora-ini">
+        </div>
+        <div class="field">
+          <label>Hora fin</label>
+          <input type="time" id="acta-hora-fin">
+        </div>
+      </div>
+
+      <!-- Objetivos -->
+      <div class="field" style="margin-bottom:16px">
+        <label>Objetivos de la reunión</label>
+        <textarea id="acta-objetivos" rows="2" placeholder="Describir el objetivo principal del seguimiento..."></textarea>
+      </div>
+
+      <!-- Temas -->
+      <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">Temas de la agenda</div>
+      <div id="acta-temas-list">
+        <div class="acta-tema-row" style="display:grid;grid-template-columns:30px 1fr 120px 80px;gap:8px;margin-bottom:8px;align-items:center">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-align:center">A</div>
+          <input type="text" placeholder="Tema" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Tiempo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+        <div class="acta-tema-row" style="display:grid;grid-template-columns:30px 1fr 120px 80px;gap:8px;margin-bottom:8px;align-items:center">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-align:center">B</div>
+          <input type="text" placeholder="Tema" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Tiempo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+        <div class="acta-tema-row" style="display:grid;grid-template-columns:30px 1fr 120px 80px;gap:8px;margin-bottom:8px;align-items:center">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-align:center">C</div>
+          <input type="text" placeholder="Tema" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Tiempo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+      </div>
+
+      <!-- Asistentes -->
+      <div style="font-size:12px;font-weight:700;color:var(--dark);margin:14px 0 8px">Asistentes</div>
+      <div id="acta-asistentes-list">
+        <div class="acta-asist-row" style="display:grid;grid-template-columns:30px 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">1</div>
+          <input type="text" placeholder="Nombre" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Cargo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+        <div class="acta-asist-row" style="display:grid;grid-template-columns:30px 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">2</div>
+          <input type="text" placeholder="Nombre" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Cargo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+        <div class="acta-asist-row" style="display:grid;grid-template-columns:30px 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">3</div>
+          <input type="text" placeholder="Nombre" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Cargo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+        <div class="acta-asist-row" style="display:grid;grid-template-columns:30px 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">4</div>
+          <input type="text" placeholder="Nombre" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Cargo" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+        </div>
+      </div>
+
+      <!-- Compromisos -->
+      <div style="font-size:12px;font-weight:700;color:var(--dark);margin:14px 0 8px">Compromisos</div>
+      <div id="acta-compromisos-list">
+        <div class="acta-comp-row" style="display:grid;grid-template-columns:30px 1fr 100px 100px 100px;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">1</div>
+          <input type="text" placeholder="Actividad / Compromiso" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px;background:#f9fafb">
+        </div>
+        <div class="acta-comp-row" style="display:grid;grid-template-columns:30px 1fr 100px 100px 100px;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">2</div>
+          <input type="text" placeholder="Actividad / Compromiso" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px;background:#f9fafb">
+        </div>
+        <div class="acta-comp-row" style="display:grid;grid-template-columns:30px 1fr 100px 100px 100px;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">3</div>
+          <input type="text" placeholder="Actividad / Compromiso" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px;background:#f9fafb">
+        </div>
+        <div class="acta-comp-row" style="display:grid;grid-template-columns:30px 1fr 100px 100px 100px;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">4</div>
+          <input type="text" placeholder="Actividad / Compromiso" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px;background:#f9fafb">
+        </div>
+        <div class="acta-comp-row" style="display:grid;grid-template-columns:30px 1fr 100px 100px 100px;gap:8px;margin-bottom:6px;align-items:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center">5</div>
+          <input type="text" placeholder="Actividad / Compromiso" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="text" placeholder="Responsable" style="font-size:12px;padding:7px 10px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px">
+          <input type="date" style="font-size:11px;padding:7px 8px;border:1px solid #e5e7eb;border-radius:7px;background:#f9fafb">
+        </div>
+      </div>
+
+      <!-- Desarrollo / Descripción -->
+      <div class="field" style="margin-top:14px">
+        <label>Desarrollo de la reunión (resumen de lo discutido)</label>
+        <textarea id="acta-desarrollo" rows="3" placeholder="Describe brevemente los puntos discutidos durante la reunión..."></textarea>
+      </div>
+
+      <!-- Botones -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <button onclick="generarActaPDF()" class="btn btn-primary"><i class="ti ti-file-download"></i> Generar Acta SGC-FR-04</button>
+        <button onclick="cerrarActaPrevia()" class="btn">Cancelar</button>
       </div>
     </div>
   </div>
