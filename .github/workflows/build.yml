@@ -9,11 +9,10 @@ permissions:
   contents: write
 
 jobs:
-  build-windows:
+  compilar-windows:
     runs-on: windows-latest
-
     steps:
-      - name: Descargar codigo
+      - name: Descargar código
         uses: actions/checkout@v4
 
       - name: Instalar Node.js
@@ -24,14 +23,19 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Compilar instalador Windows
+      - name: Compilar instalador de Windows
+        run: npx electron-builder --win nsis --x64 --publish always
         shell: pwsh
-        run: |
-          Remove-Item Env:WIN_CSC_LINK -ErrorAction SilentlyContinue
-          Remove-Item Env:CSC_LINK -ErrorAction SilentlyContinue
-          Remove-Item Env:WIN_CSC_KEY_PASSWORD -ErrorAction SilentlyContinue
-          Remove-Item Env:CSC_KEY_PASSWORD -ErrorAction SilentlyContinue
-          npx electron-builder --win nsis --x64 --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Publicar en Releases de GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          name: "App Seguimiento Comercial CMD ${{ github.ref_name }}"
+          body: |
+            ## App Seguimiento Comercial CMD
+            **Versión:** ${{ github.ref_name }}
+        env:
