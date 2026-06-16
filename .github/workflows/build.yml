@@ -25,6 +25,7 @@ jobs:
         run: npm install
 
       - name: Compilar instalador Windows
+<<<<<<< HEAD
         shell: pwsh
         run: |
           Remove-Item Env:WIN_CSC_LINK -ErrorAction SilentlyContinue
@@ -35,3 +36,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+=======
+        run: npx electron-builder --win portable --x64
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Publicar en GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          name: "App Seguimiento Comercial CMD ${{ github.ref_name }}"
+          body: |
+            ## App Seguimiento Comercial CMD
+            **Versión:** ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+>>>>>>> 02ae1a0 (arreglar build)
