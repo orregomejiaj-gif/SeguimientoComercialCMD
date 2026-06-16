@@ -38,4 +38,3 @@ jobs:
           body: |
             ## App Seguimiento Comercial CMD
             **Versión:** ${{ github.ref_name }}
-        env:
