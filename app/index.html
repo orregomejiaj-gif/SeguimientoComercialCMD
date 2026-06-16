@@ -356,7 +356,11 @@ select[multiple]{height:120px;padding:4px}
 <body>
 <div id="lock-overlay" class="lock-overlay"></div>
 <script>
+
 var LOGO_B64="data:image/png;base64,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";
+// Make RECTORIAS globally accessible across scripts
+if(typeof RECTORIAS !== 'undefined') window.RECTORIAS = RECTORIAS;
+
 </script>
 <div class="app">
 
@@ -543,7 +547,7 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
 </div>
 
 <!-- ═══════════ ETAPA 2: MENÚ ═══════════ -->
-<div <div <div <div <div <div id="etapa-menu" style="display:none;min-height:85vh;padding:20px 0">
+<div id="etapa-menu" style="display:none;min-height:100vh;padding:20px;background:#f5f7fa">
 
   <!-- Bienvenida -->
   <div id="menu-bienvenida" style="background:linear-gradient(135deg,#003D45 0%,#005a66 60%,#00798a 100%);border-radius:18px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 8px 24px rgba(0,61,69,.3)">
@@ -819,7 +823,7 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
     <div style="flex:1;height:1px;background:linear-gradient(to right,rgba(255,217,0,.3),transparent)"></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:22px">
-    <div onclick="abrirPagos()" style="border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 12px;cursor:pointer;transition:.25s;background:rgba(255,255,255,.05);text-align:center;position:relative"
+    <div onclick="abrirPagos()" style="border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 12px;cursor:pointer;transition:.25s;background:#fff;text-align:center;position:relative"
       onmouseover="this.style.background='rgba(255,255,255,.12)';this.style.borderColor='rgba(255,217,0,.5)';this.style.transform='translateY(-2px)'"
       onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.1)';this.style.transform=''">
       <span style="position:absolute;top:8px;right:8px;background:#FFD900;color:#003D45;font-size:8px;font-weight:800;border-radius:6px;padding:2px 6px">NUEVO</span>
@@ -872,7 +876,9 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
   <div class="card" id="card-datos">
     <div class="card-hdr"><div class="cico"><i class="ti ti-building"></i></div><h2>Datos del seguimiento</h2></div>
     <div class="grid2" style="margin-bottom:12px">
-      <div class="field"><label>Rectoría</label><select id="rectoria" multiple size="4" onchange="filtrarSedes()" style="width:100%;padding:6px 8px;border:1px solid #e5e7eb;border-radius:8px;font-size:12px;font-family:Ubuntu,sans-serif;min-height:80px" title="Ctrl+clic para seleccionar varias"><option value="">— Ctrl+clic para seleccionar varias —</option></select></div>
+      <div class="field"><label>Rectoría</label><select id="rectoria" multiple size="5" onchange="filtrarSedes()" style="width:100%;padding:6px 8px;border:1px solid #e5e7eb;border-radius:8px;font-size:12px;font-family:Ubuntu,sans-serif;min-height:90px" title="Ctrl+clic para seleccionar varias">
+<option value="">— Seleccionar Rectoría (Ctrl+clic = varias) —</option>
+</select></div>
       <div class="field" id="campo-sede-coord" style="display:none">
         <label>Sede(s) <span style="font-size:10px;color:var(--teal)">(Ctrl+clic para múltiples)</span></label>
         <select id="sede-multi" multiple onchange="onSedesChange()"></select>
@@ -1143,7 +1149,7 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
           <div>
             <label style="font-size:10px;font-weight:700;color:var(--teal-d);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Créditos desembolsados</label>
-            <input type="number" id="real_creditos" oninput="actualizarSemaforoProyeccion()" placeholder="0" oninput="calcPortafolio()"
+            <input type="number" id="real_creditos" oninput="actualizarSemaforoProyeccion();calcPortafolio();calcConversion();calcPromDiario()" placeholder="0"
               style="width:100%;font-size:20px;font-weight:700;color:var(--dark);padding:10px 12px;border:2px solid var(--teal);border-radius:9px;text-align:center;background:#fff">
             <div style="font-size:10px;color:var(--text2);text-align:center;margin-top:3px">Real del período</div>
           </div>
@@ -2589,6 +2595,17 @@ var LOGO_B64="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJ
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 var CARGOS_DATA=[{"cargo": "Director Nacional Comercial", "proceso": "Gestion Comercial", "jefe": "Gerente General", "objetivo": "Direccionar la operacion y prestacion del servicio de las sedes a nivel nacional, garantizando resultados en vinculacion de asociados, metas de colocacion para todas las lineas de credito y recuperacion de cartera.", "educacion": "Maestria/Especializacion en mercadeo, finanzas, administracion o afines. Profesional en ciencias administrativas, comerciales o ingenierias.", "experiencia": "Minimo 6 anos externos (direccion/gerencia). Minimo 3 anos internos. Con 3 anos manejo de personal.", "funciones": ["Revisar correo diariamente e identificar solicitudes urgentes", "Garantizar ejecucion del plan de desarrollo y proyectos", "Asegurar cumplimiento de presupuestos de colocacion de credito a nivel nacional", "Implementar estrategias comerciales para incrementar satisfaccion de clientes", "Liderar diseno y desarrollo de productos a nivel nacional", "Realizar visitas de acompanamiento a oficinas nacionales", "Presentar informes de gestion a la Gerencia General", "Elaborar indicadores de gestion con analisis y plan de accion", "Asegurar ejecucion de planes de fidelizacion y posventa", "Garantizar participacion del grupo comercial en eventos de mercadeo"]}, {"cargo": "Director Comercial", "proceso": "Gestion Comercial", "jefe": "Director Nacional Comercial", "objetivo": "Controlar la operacion y prestacion del servicio de las sedes a cargo, garantizando resultados en vinculacion de asociados, metas de colocacion y recuperacion de cartera.", "educacion": "Especialista en mercadeo, finanzas o administracion. Profesional en ciencias administrativas, comerciales o economicas.", "experiencia": "Minimo 4 anos externos. Minimo 2 anos internos. Con 2 anos manejo de personal.", "funciones": ["Revisar correo diariamente", "Realizar seguimiento al reglamento de trabajo", "Elaborar indicadores de gestion mensualmente", "Garantizar cumplimiento de presupuestos de colocacion", "Revisar cumplimiento de presupuestos con coordinaciones periodicamente", "Realizar acompanamiento a sedes para monitorear desempeño", "Garantizar induccion y capacitacion del personal", "Realizar evaluaciones de desempeño del personal a cargo", "Asegurar ejecucion de acciones de cobranza", "Presentar informes de gestion a la Direccion Nacional"]}, {"cargo": "Subdirector Comercial", "proceso": "Gestion Comercial", "jefe": "Director Comercial", "objetivo": "Controlar la operacion de sedes comerciales garantizando resultados en vinculacion, colocacion y cartera. Apoyar la gestion de la Direccion Comercial en proyectos del plan de desarrollo.", "educacion": "Profesional en ciencias administrativas, comerciales, mercadeo, economicas o contables.", "experiencia": "Minimo 3 anos externos. Minimo 1.5 anos internos. Con 1.5 anos manejo de personal.", "funciones": ["Revisar correo diariamente", "Elaborar indicadores de gestion y plan de accion", "Garantizar ejecucion de politicas de mercadeo en sedes", "Asegurar cumplimiento de presupuestos de colocacion", "Seguimiento continuo al resultado de colocacion", "Monitorear cumplimiento de protocolos comerciales", "Consolidar indicadores de gestion Preventa/Venta", "Disenar y documentar el modelo comercial", "Disenar planes de capacitacion comercial", "Asegurar ejecucion de acciones de cobranza en coordinaciones"]}, {"cargo": "Coordinador Comercial", "proceso": "Gestion Comercial", "jefe": "Director Comercial", "objetivo": "Garantizar el cumplimiento de las metas de la oficina en colocacion de creditos, vinculacion de asociados y cartera vencida. Asegurar implementacion de politicas y estrategia de mercadeo.", "educacion": "Profesional en programas comerciales, administrativos, de mercadeo o contables.", "experiencia": "Minimo 2 anos externos. Minimo 1 ano interno. Con 1 ano manejo de personal.", "funciones": ["Revisar correo y gestionar solicitudes diariamente", "Asegurar cumplimiento de presupuestos de colocacion", "Revisar formularios de solicitud verificando conformidad", "Revisar documentos anexos asegurando que sean originales y vigentes", "Garantizar que asesores realicen revision de documentos", "Controlar manejo de cajas menores y anticipos", "Presentar informes de gestion a la Direccion Comercial", "Realizar mantenimiento de clientes potenciales", "Asegurar ejecucion de acciones de cobranza", "Tramitar solicitudes de permiso y vacaciones del personal"]}, {"cargo": "Analista Lider Comercial", "proceso": "Gestion Comercial", "jefe": "Director Comercial / Coordinador Comercial", "objetivo": "Contribuir al logro de metas comerciales en colocacion, vinculacion y gestion de cartera. Apoyar en evaluacion y control de procesos comerciales.", "educacion": "Estudiante de noveno semestre en adelante en programas comerciales, administrativos o ingenieria industrial.", "experiencia": "Minimo 2 anos externos. Minimo 1 ano interno. Con 6 meses manejo de personal.", "funciones": ["Revisar correo y gestionar solicitudes diariamente", "Asegurar cumplimiento de presupuestos de colocacion", "Revisar periodicamente cumplimiento de presupuestos con asesores", "Realizar mantenimiento de clientes potenciales", "Asegurar ejecucion de acciones de cobranza", "Reportar necesidades de formacion y capacitacion", "Presentar reportes de indicadores de gestion", "Controlar manejo de cajas menores"]}, {"cargo": "Analista Comercial", "proceso": "Gestion Comercial", "jefe": "Subdirector / Coordinador Comercial", "objetivo": "Apoyar y asegurar la realizacion de procesos operativos que garantizan la entrega de productos y servicios a los asociados.", "educacion": "Estudiante de septimo semestre en adelante en programas de Administracion, mercadeo o Financieros. Tecnologo graduado.", "experiencia": "Minimo 1 ano externo. Minimo 6 meses interno.", "funciones": ["Revisar correo y gestionar solicitudes diariamente", "Asegurar calidad de la informacion reportada", "Detectar e informar no conformidades en el proceso", "Registrar Salidas No Conformes", "Implementar acciones correctivas o preventivas", "Identificar oportunidades de mejora en los procesos"]}, {"cargo": "Analista Comercial Sede", "proceso": "Gestion Comercial", "jefe": "Director Comercial", "objetivo": "Asegurar y apoyar procesos operativos en la sede que garantizan entrega de productos y servicios a los asociados.", "educacion": "Estudiante de septimo semestre en programas Administrativos comerciales o Financieros. Tecnologo en programas afines.", "experiencia": "Minimo 1 ano externo. Minimo 6 meses interno.", "funciones": ["Revisar correo y gestionar solicitudes", "Asegurar cumplimiento de presupuestos educativo y consumo", "Revisar formularios de solicitud verificando requisitos", "Notificar y gestionar recuperacion a solicitantes", "Controlar cajas menores", "Actualizar datos demograficos de asociados", "Velar por orden y seguridad de la sede", "Asegurar ejecucion de acciones de cobranza"]}, {"cargo": "Asesor Comercial", "proceso": "Gestion Comercial", "jefe": "Director / Subdirector / Coordinador / Analista Lider", "objetivo": "Brindar asesoria sobre productos y servicios, tramitar solicitudes de credito y llevar a cabo la prestacion del servicio en la sede para garantizar cumplimiento de metas y satisfaccion.", "educacion": "Estudiante de tercer semestre en adelante en programas administrativos, economicos o comerciales. Tecnico graduado.", "experiencia": "Minimo 6 meses externos. Minimo 3 meses internos.", "funciones": ["Revisar correo y gestionar solicitudes diariamente", "Asesorar clientes sobre oferta de productos cumpliendo protocolos", "Recibir y revisar formularios de solicitud", "Revisar documentos anexos asegurando conformidad", "Rechazar documentos que no cumplan condiciones", "Tramitar renovaciones de credito segun SGC", "Gestionar campanas de actualizacion de datos", "Realizar seguimiento a solicitudes de credito", "Gestionar cobranza asignada", "Emitir recibos de pago segun solicitudes"]}, {"cargo": "Coordinador Comercial CUSI", "proceso": "Gestion Comercial", "jefe": "Director Comercial", "objetivo": "Controlar la operacion del canal unico de servicio implementando estrategias comerciales orientadas al cumplimiento de objetivos, garantizando atencion adecuada y oportuna.", "educacion": "Profesional en programas comerciales, administrativos, de mercadeo o contables.", "experiencia": "Minimo 2 anos externos. Minimo 1 ano interno. Con 1 ano manejo de personal.", "funciones": ["Revisar correo y gestionar solicitudes", "Asegurar cumplimiento de tiempos de respuesta en canales", "Realizar monitoreos y retroalimentaciones sobre protocolos", "Informar indicadores internos del canal mensualmente", "Asegurar ejecucion de acciones de cobranza CUSI", "Garantizar que personal del CUSI tenga horarios asignados", "Monitorear desempeño de plataformas del canal", "Evaluar impacto de campanas en el canal"]}, {"cargo": "Analista Comercial CUSI", "proceso": "Gestion Comercial", "jefe": "Coordinador Comercial CUSI", "objetivo": "Asegurar y apoyar procesos operativos para mantener la operacion de los diferentes canales de comunicacion integrados a la OMNICANALIDAD.", "educacion": "Estudiante de septimo semestre en programas Administrativos o Financieros. Tecnologo en programas afines.", "experiencia": "Minimo 1 ano externo. Minimo 6 meses interno.", "funciones": ["Diligenciamiento mensual de KPIs en plataforma SECOMID", "Monitorear filas, esperas y colas en la atencion CUSI", "Recibir y tramitar solicitudes de retiro de aportes", "Actualizar datos demograficos de asociados", "Brindar soporte a asesores comerciales CUSI", "Revisar y responder PQRSF del CUSI en tiempos establecidos", "Asegurar ejecucion de acciones de cobranza", "Reportar novedades a la Coordinacion CUSI"]}, {"cargo": "Asesor Comercial CUSI", "proceso": "Gestion Comercial", "jefe": "Coordinador Comercial CUSI", "objetivo": "Brindar asesoria sobre productos y servicios en el canal unico, tramitar solicitudes de credito para garantizar metas de colocacion y satisfaccion.", "educacion": "Estudiante de tercer semestre en programas administrativos, economicos o comerciales. Tecnico graduado.", "experiencia": "Minimo 6 meses.", "funciones": ["Revisar correo y gestionar solicitudes", "Asesorar clientes sobre productos cumpliendo protocolos", "Recibir y revisar documentos verificando requisitos del SGC", "Aplicar protocolos de atencion al asociado", "Radicacion y seguimiento de incidencias en GLPI y Salesforce", "Liquidar y emitir recibos de pago", "Realizar acuerdos de pago y normalizacion", "Gestionar paz y salvos, certificaciones y declaraciones de renta"]}, {"cargo": "Formador", "proceso": "Gestion Comercial / Gestion de Operaciones", "jefe": "Direccion Comercial / Direccion Credito / Direccion Cartera", "objetivo": "Garantizar la apropiacion del conocimiento para el desempeño exitoso de los colaboradores. Identificar necesidades de formacion y realizar reentrenamiento continuo.", "educacion": "Estudiante de septimo semestre en adelante en Ciencias humanas, sociales o Administrativas. Tecnologo graduado en areas afines.", "experiencia": "Minimo 1 ano externo en Gestion de Credito, Cartera o Comercial. Minimo 6 meses interno.", "funciones": ["Cumplir con el reglamento de trabajo y procedimientos del SGC", "Revisar correo y gestionar solicitudes", "Dar soporte a procesos internos que lo requieran", "Capacitar y socializar documentos del SGC al personal", "Entrenar al personal en procesos y funciones", "Identificar necesidades de formacion en las sedes"]}];
 
 
@@ -3801,7 +3818,7 @@ function init(){
 
   // STEP 2: Initialize rectoria dropdown
   var rs=document.getElementById('rectoria');
-  if(rs) Object.keys(RECTORIAS).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;rs.appendChild(o);});
+  if(rs) Object.keys(typeof RECTORIAS!=="undefined"?RECTORIAS:(window.RECTORIAS||{})).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;rs.appendChild(o);});
 
   // STEP 3: Set mode (coord by default)
   setMode('coord');
@@ -3857,41 +3874,44 @@ function setMode(m){
   safe('seg-asesor',function(el){el.style.display=m==='asesor'?'block':'none';});
   safe('hdr-title',function(el){el.textContent=m==='coord'?'Seguimiento Comercial — Coordinación':'Seguimiento Comercial — Asesor';});
   filtrarSedes();
+
+  setTimeout(function(){poblarSelectRectorias();},60);
 }
 
 // ============================================================
 // SEDES
 // ============================================================
+function poblarSelectRectorias(){
+  var _R=(typeof RECTORIAS!=='undefined')?RECTORIAS:(window.RECTORIAS||{});
+  var keys=Object.keys(_R);
+  if(!keys.length) return;
+  var sel=document.getElementById('rectoria');
+  if(!sel) return;
+  if(sel.options.length>1 && sel.options[1] && _R[sel.options[1].value]) return;
+  sel.innerHTML='<option value="">— Seleccionar Rectoría (Ctrl+clic = varias) —</option>';
+  keys.forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k;sel.appendChild(o);});
+}
+
 function filtrarSedes(){
+  poblarSelectRectorias();
+  var _R=(typeof RECTORIAS!=='undefined')?RECTORIAS:(window.RECTORIAS||{});
   var rEl=document.getElementById('rectoria');
   var sm=document.getElementById('sede-multi');
   var ss=document.getElementById('sede-single');
   if(!rEl||!sm||!ss) return;
-  // Support multi-select
-  var selectedOpts = Array.from(rEl.selectedOptions||[]).map(function(o){return o.value;}).filter(Boolean);
-  var r = selectedOpts.length===1 ? selectedOpts[0] : (selectedOpts.length>1 ? '__multi__' : '');
-  // Build combined sedes list
-  var allSedes = [];
-  if(selectedOpts.length>0){
-    selectedOpts.forEach(function(rect){
-      if(RECTORIAS[rect]) allSedes = allSedes.concat(RECTORIAS[rect]);
-    });
-  } else if(r&&RECTORIAS[r]){
-    allSedes = RECTORIAS[r];
-  }
-  sm.innerHTML='';ss.innerHTML='<option value="">— Seleccionar sede —</option>';
-  if(allSedes.length>0){
-    allSedes.forEach(function(sd){
-      var o1=document.createElement('option');o1.value=sd;o1.textContent=sd;sm.appendChild(o1);
-      var o2=document.createElement('option');o2.value=sd;o2.textContent=sd;ss.appendChild(o2);
-    });
-  } else if(r&&RECTORIAS[r]){
-    RECTORIAS[r].forEach(function(sd){
-      var o1=document.createElement('option');o1.value=sd;o1.textContent=sd;sm.appendChild(o1);
-      var o2=document.createElement('option');o2.value=sd;o2.textContent=sd;ss.appendChild(o2);
-    });
-  }
-  document.getElementById('meta-coloc-display').innerHTML='<p style="color:var(--text2);font-size:13px">Selecciona las sedes para ver las metas consolidadas.</p>';
+  var sel=Array.from(rEl.selectedOptions||[]).map(function(o){return o.value;}).filter(Boolean);
+  var allSedes=[];
+  sel.forEach(function(rect){if(_R[rect]) allSedes=allSedes.concat(_R[rect]);});
+  sm.innerHTML='';
+  ss.innerHTML='<option value="">— Seleccionar sede —</option>';
+  allSedes.forEach(function(sd){
+    var o1=document.createElement('option');o1.value=sd;o1.textContent=sd;sm.appendChild(o1);
+    var o2=document.createElement('option');o2.value=sd;o2.textContent=sd;ss.appendChild(o2);
+  });
+  if(sel.length===1) state.rectoria=sel[0];
+  else if(sel.length>1) state.rectoria=sel.join(', ');
+  var d=document.getElementById('meta-coloc-display');
+  if(d&&!allSedes.length) d.innerHTML='<p style="color:var(--text2);font-size:13px">Selecciona las sedes para ver las metas.</p>';
 }
 
 function onSedesChange(){
@@ -3900,6 +3920,11 @@ function onSedesChange(){
   renderMetasConsolidadas();
   renderEvolucionMensual();
   setTimeout(renderAnioAnteriorTable,100);
+
+  // También actualizar el semáforo
+  setTimeout(function(){
+    if(typeof actualizarSemaforoProyeccion==='function') actualizarSemaforoProyeccion();
+  }, 150);
 }
 
 function onSedeAsesorChange(){
@@ -3984,6 +4009,11 @@ function renderMetasConsolidadas(){
   state.metas.meta_mes_n=mAcum.n; state.metas.meta_mes_v=mAcum.v;
   state.metas.meta_total_n=mTotal.n; state.metas.meta_s1_n=mS1.n; state.metas.meta_s2_n=mS2.n;
   state.meses=meses;
+
+  // Actualizar semáforo de proyección con las metas calculadas
+  setTimeout(function(){
+    if(typeof actualizarSemaforoProyeccion==='function') actualizarSemaforoProyeccion();
+  }, 50);
 }
 function calcMetaAsesor(){
   var sede=state.sedes[0]||'';
@@ -4520,30 +4550,70 @@ function calcCalifAsesor(){
 // GUARDAR SEGUIMIENTO
 // ============================================================
 function guardarMetas(){
-  state.metas.t_gestion=3;state.metas.t_respuesta=72;state.metas.csat=100;state.metas.nps=90;
-  ['act_plan','chats','anticipo','snc','pqrs'].forEach(k=>{
-    var el=document.getElementById('meta_'+k);if(el&&el.value!=='')state.metas['meta_'+k]=parseFloat(el.value);
+  // --- Metas fijas institucionales ---
+  state.metas.t_gestion=3; state.metas.t_respuesta=72;
+  state.metas.csat=100; state.metas.nps=90;
+  ['act_plan','chats','anticipo','snc','pqrs'].forEach(function(k){
+    var el=document.getElementById('meta_'+k);
+    if(el&&el.value!=='') state.metas['meta_'+k]=parseFloat(el.value);
   });
-  state.rectoria=document.getElementById('rectoria').value;
-  state.coordinador=(document.getElementById('coordinador') ? document.getElementById('coordinador').value : '')||'';
-  state.ejecutor=(document.getElementById('ejecutor') ? document.getElementById('ejecutor').value : '')||'';
-  var _meses=getMesesSeleccionados(); state.mes=_meses[0]||'Mayo'; state.meses=_meses;
-  state.anio=document.getElementById('anio').value;
-  state.fechaSeg=document.getElementById('fecha-seg').value;
-  state.mode=mode;
-  if(mode==='asesor'){
-    state.num_asesores=parseInt(document.getElementById('num-asesores').value)||1;
-    state.asesor_nombre=document.getElementById('asesor-nombre').value;
-    state.asesor_coord=document.getElementById('asesor-coord').value;
-    state.ejecutor_asesor=document.getElementById('ejecutor-asesor').value;
-    state.asesor_cargo=document.getElementById('asesor-cargo').value;
-    state.asesor_antiguedad=document.getElementById('asesor-antiguedad').value;
+
+  // --- Datos del encabezado ---
+  state.rectoria = (document.getElementById('rectoria')||{}).value||'';
+  state.coordinador = ((document.getElementById('coordinador')||{}).value)||'';
+  state.ejecutor = ((document.getElementById('ejecutor')||{}).value)||'';
+
+  // --- Meses y año ---
+  var _meses = getMesesSeleccionados();
+  state.mes = _meses[0]||'Mayo';
+  state.meses = _meses;
+  state.anio = ((document.getElementById('anio')||{}).value)||'2026';
+  state.fechaSeg = ((document.getElementById('fecha-seg')||{}).value)||'';
+  state.mode = mode;
+
+  // --- CRÍTICO: leer sedes seleccionadas y guardar en state ---
+  if(mode==='coord'){
+    var smEl = document.getElementById('sede-multi');
+    if(smEl){
+      state.sedes = Array.from(smEl.selectedOptions).map(function(o){return o.value;}).filter(Boolean);
+    }
+  } else {
+    // Modo asesor: sede única
+    var ssEl = document.getElementById('sede-single');
+    if(ssEl && ssEl.value){
+      state.sedes = [ssEl.value];
+    }
+    state.num_asesores = parseInt(((document.getElementById('num-asesores')||{}).value)||'1')||1;
+    state.asesor_nombre = ((document.getElementById('asesor-nombre')||{}).value)||'';
+    state.asesor_coord = ((document.getElementById('asesor-coord')||{}).value)||'';
+    state.ejecutor_asesor = ((document.getElementById('ejecutor-asesor')||{}).value)||'';
+    state.asesor_cargo = ((document.getElementById('asesor-cargo')||{}).value)||'';
+    state.asesor_antiguedad = ((document.getElementById('asesor-antiguedad')||{}).value)||'';
   }
+
+  // --- Calcular metas de colocación con las sedes guardadas ---
+  if(mode==='coord'){
+    renderMetasConsolidadas();
+  } else {
+    calcMetaAsesor();
+  }
+
+  // --- Guardar y navegar ---
   guardarLS();
   navState.h1Guardada = true;
   applyNavState();
-  mostrarAlertaNav('Metas guardadas. Puedes pasar a la Hoja 2.');
-  setTimeout(function(){ irAHoja('h2'); }, 1800);
+  setMode(mode||'coord');
+
+  mostrarAlertaNav('✅ Metas guardadas. Pasando a Seguimiento...');
+  setTimeout(function(){
+    var t2 = document.querySelector('.tab[onclick*="h2"]');
+    if(typeof showTab==='function') showTab('h2', t2);
+    // Activar semáforo al llegar a H2
+    setTimeout(function(){
+      if(typeof actualizarSemaforoProyeccion==='function') actualizarSemaforoProyeccion();
+      if(typeof calcLeads==='function') calcLeads();
+    }, 200);
+  }, 1400);
 }
 
 function guardarSeguimiento(){
@@ -5061,7 +5131,7 @@ function renderAnalisisAsesor(){
 
 function getMetaRectoria(rectoria, mes){
   var tn=0;
-  var sedes=RECTORIAS[rectoria]||[];
+  var sedes=(typeof RECTORIAS!=="undefined"?RECTORIAS:(window.RECTORIAS||{}))[rectoria]||[];
   sedes.forEach(s=>{if(MC[s]){var m=MC[s][mes]||MC[s].total;tn+=m.n;}});
   return tn;
 }
@@ -5985,7 +6055,7 @@ function abrirCartaMetas(){
   rects.forEach(function(id){
     var el=document.getElementById(id);
     if(el&&el.options.length<=1){
-      Object.keys(RECTORIAS).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;el.appendChild(o);});
+      Object.keys(typeof RECTORIAS!=="undefined"?RECTORIAS:(window.RECTORIAS||{})).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;el.appendChild(o);});
     }
   });
   // Pre-fill firma from coordinador
@@ -7676,7 +7746,7 @@ function getTotalGlobalMultiMes(meses){
 
 function getRectoriaMetaMultiMes(rectoria, meses){
   var tn=0;
-  var sedes = RECTORIAS[rectoria]||[];
+  var sedes = (typeof RECTORIAS!=="undefined"?RECTORIAS:(window.RECTORIAS||{}))[rectoria]||[];
   sedes.forEach(function(s){
     if(!MC[s]) return;
     meses.forEach(function(m){
@@ -7914,6 +7984,11 @@ function actualizarInfoSeg(){
   }
   renderEvolucionMensual();
   setTimeout(renderAnioAnteriorTable,150);
+
+  // Activar semáforo de proyección siempre que se entra a H2
+  setTimeout(function(){
+    if(typeof actualizarSemaforoProyeccion==='function') actualizarSemaforoProyeccion();
+  }, 100);
 }
 
 
@@ -8176,7 +8251,7 @@ function abrirModalCompromisos(){setBreadcrumb('Documentos','Compromisos Laboral
   // Populate rectoria
   var rs = document.getElementById('comp-rectoria-sel');
   if(rs && rs.options.length<=1){
-    Object.keys(RECTORIAS).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;rs.appendChild(o);});
+    Object.keys(typeof RECTORIAS!=="undefined"?RECTORIAS:(window.RECTORIAS||{})).forEach(function(r){var o=document.createElement('option');o.value=r;o.textContent=r;rs.appendChild(o);});
   }
   // Pre-fill from navState
   var lider = document.getElementById('comp-lider');
@@ -8817,33 +8892,14 @@ function buscarEmpleado(usuario){
 }
 
 function loginIngresar(){
-  var input = document.getElementById('login-usuario');
+  var input=document.getElementById('login-usuario');
   if(!input) return;
-  var usuario = input.value.trim().toLowerCase();
-  var correo = usuario + '@coopminutodedios.com';
-  var emp = EMPLEADOS_BD[correo];
+  var usuario=input.value.trim().toLowerCase();
+  var correo=usuario+'@coopminutodedios.com';
+  var emp=EMPLEADOS_BD[correo];
   if(!emp){ mostrarAlertaNav('Usuario no encontrado. Verifica el nombre ingresado.'); return; }
-
-  // Store employee temporarily — will complete login after password
-  window._pendingEmp = {correo:correo, emp:emp};
-
-  // Reset failed attempts counter
-  window._pwdFails=0;
-  // Show password screen with user info
-  var ep = document.getElementById('etapa-password');
-  var el = document.getElementById('etapa-login');
-  if(ep){
-    // Update password screen to show who is logging in
-    var userHdr = document.getElementById('pwd-user-label');
-    if(userHdr){
-      var pname = emp.nombre.split(' ').filter(function(p){return p.length>2;});
-      userHdr.textContent = 'Hola, ' + (pname[0]||emp.nombre) + ' — ingresa tu clave';
-    }
-    ep.style.display='flex';
-    if(el) el.style.display='none';
-    mostrarNormalPassword();
-    setTimeout(function(){var inp=document.getElementById('pwd-input');if(inp)inp.focus();},200);
-  }
+  window._pendingEmp={correo:correo,emp:emp};
+  _completarLogin();
 }
 
 function _completarLogin(){
@@ -8897,13 +8953,14 @@ function irEtapaMenu(){
   var em=document.getElementById('etapa-menu');
   if(el) el.style.display='none';
   if(ep) ep.style.display='none';
+  var oldShell=document.getElementById('etapa-menu-old-shell');if(oldShell)oldShell.style.display='none';
   if(em) em.style.display='block';
   // Make H0 active and visible
   document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('active');s.style.display='none';});
   var h0=document.getElementById('h0');
   if(h0){h0.classList.add('active');h0.style.display='block';}
-  // Show tabs bar, hide action bar
-  if(typeof mostrarTabs==='function') mostrarTabs();
+  // HIDE tabs bar — follower sheets must not be visible from menu
+  if(typeof ocultarTabs==='function') ocultarTabs();
   var hdr=document.getElementById('hdr-actions-bar');
   if(hdr) hdr.style.display='none';
   // Set H0 tab as active
@@ -10152,50 +10209,119 @@ function mostrarTopSedes(){
 // SEMAFORO PROYECCION
 // ══════════════════════════════════════════════
 function actualizarSemaforoProyeccion(){
-  var container=document.getElementById('semaforo-proyeccion');
-  if(!container)return;
-  var meses=getMesesSeleccionados?getMesesSeleccionados():[];
-  if(!meses.length){container.style.display='none';return;}
-  var meta=getMetaAcumulada?getMetaAcumulada(state.sedes||[],meses):{n:0};
-  var metaN=meta.n||0;
-  if(!metaN){container.style.display='none';return;}
-  container.style.display='block';
-  var habInfo=getDiasHabilesInfo?getDiasHabilesInfo():{total:22,transcurridos:1};
-  var total=habInfo.total||22;
-  var trans=Math.max(1,habInfo.transcurridos||1);
-  var falt=Math.max(0,total-trans);
-  var debo=Math.round((metaN/total)*trans);
-  var llevo=0;
-  var realEl=document.getElementById('real_creditos');
-  if(realEl&&realEl.value) llevo=parseFloat(realEl.value)||0;
-  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
-  set('sem-debo',debo);
-  set('sem-llevo',llevo);
-  set('sem-dias-falt',falt);
-  var ritmo=(llevo/trans).toFixed(1);
-  set('sem-ritmo',ritmo);
-  var proy=Math.round(llevo+parseFloat(ritmo)*falt);
-  set('sem-proy',proy);
-  var faltantes=Math.max(0,metaN-llevo);
-  var necesDia=falt>0?(faltantes/falt).toFixed(1):'0';
-  set('sem-necesitas',necesDia+' creditos/dia');
-  set('sem-dias-info',faltantes+' faltantes en '+falt+' dias habiles');
-  var pct=debo>0?(llevo/debo*100):0;
-  var pctBar=document.getElementById('sem-pct-bar');
-  if(pctBar){pctBar.style.width=Math.min(100,pct).toFixed(1)+'%';}
-  var emoji,estado,col,cardBg,cardBorder;
-  if(pct>=100){emoji='😄';estado='META DEL DIA CUMPLIDA';col='#16a34a';cardBg='#f0fdf4';cardBorder='#16a34a';}
-  else if(pct>=80){emoji='🏃';estado='En camino — empuja!';col='#65a30d';cardBg='#f7fee7';cardBorder='#84cc16';}
-  else if(pct>=50){emoji='😟';estado='Atencion — acelera el ritmo';col='#d97706';cardBg='#fffbeb';cardBorder='#f59e0b';}
-  else if(pct>=10){emoji='😨';estado='Riesgo alto — accion inmediata';col='#dc2626';cardBg='#fef2f2';cardBorder='#f87171';}
-  else{emoji='💀';estado='Situacion critica';col='#7f1d1d';cardBg='#fef2f2';cardBorder='#dc2626';}
-  var cara=document.getElementById('sem-cara');
-  var estadoEl=document.getElementById('sem-estado-txt');
-  var llevoCard=document.getElementById('sem-llevo-card');
-  if(cara)cara.textContent=emoji;
-  if(estadoEl){estadoEl.textContent=estado+' ('+pct.toFixed(1)+'% del objetivo diario)';estadoEl.style.color=col;}
-  if(pctBar)pctBar.style.background=col;
-  if(llevoCard){llevoCard.style.background=cardBg;llevoCard.style.borderColor=cardBorder;}
+  var container = document.getElementById('semaforo-proyeccion');
+  if(!container) return;
+
+  // Obtener meses y sedes del estado actual
+  var meses = getMesesSeleccionados ? getMesesSeleccionados() : (state.meses||[state.mes||'Mayo']);
+  var sedes = state.sedes||[];
+  if(!meses.length || !sedes.length){
+    container.style.display = 'none';
+    return;
+  }
+
+  // Meta total de las sedes seleccionadas
+  var meta = getMetaAcumulada ? getMetaAcumulada(sedes, meses) : {n: state.metas.meta_mes_n||0};
+  var metaN = meta.n || state.metas.meta_mes_n || 0;
+  if(!metaN){ container.style.display='none'; return; }
+  container.style.display = 'block';
+
+  // Días hábiles
+  var habInfo = getDiasHabilesInfo ? getDiasHabilesInfo() : {total:22, transcurridos:1};
+  var total = habInfo.total || 22;
+  var trans = Math.max(1, habInfo.transcurridos || 1);
+  var falt = Math.max(0, total - trans);
+
+  // Ejecutado real
+  var realEl = document.getElementById('real_creditos');
+  var llevo = realEl ? (parseFloat(realEl.value)||0) : (state.seguimiento && state.seguimiento.real_creditos ? state.seguimiento.real_creditos : 0);
+
+  // Cálculos clave
+  var debo = Math.round((metaN / total) * trans);           // cuánto debería llevar hoy
+  var ritmo = trans > 0 ? llevo / trans : 0;                // créditos por día hábil
+  var proy = Math.round(llevo + ritmo * falt);              // proyección al cierre
+  var pctMeta = metaN > 0 ? (llevo / metaN * 100) : 0;     // cumplimiento % vs meta total
+  var pctDia = debo > 0 ? (llevo / debo * 100) : 0;        // cumplimiento % vs objetivo del día
+  var faltantes = Math.max(0, metaN - llevo);
+  var necesDia = falt > 0 ? (faltantes / falt).toFixed(1) : '0';
+
+  // Actualizar valores en DOM
+  var set = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; };
+  set('sem-debo',   debo.toLocaleString('es-CO'));
+  set('sem-llevo',  llevo.toLocaleString('es-CO'));
+  set('sem-dias-falt', falt);
+  set('sem-ritmo',  ritmo.toFixed(1));
+  set('sem-proy',   proy.toLocaleString('es-CO'));
+  set('sem-necesitas', necesDia + ' cred/día');
+  set('sem-dias-info', faltantes.toLocaleString('es-CO') + ' faltantes en ' + falt + ' días hábiles');
+
+  // Barra de progreso (vs meta total)
+  var pctBar = document.getElementById('sem-pct-bar');
+  if(pctBar){ pctBar.style.width = Math.min(100, pctMeta).toFixed(1) + '%'; }
+
+  // ══════════════════════════════════════
+  // SEMÁFORO CON EMOJIS — Proyectado vs Ejecutado vs Meta
+  // Lógica: compara proyección al cierre vs meta total
+  // ══════════════════════════════════════
+  var pctProy = metaN > 0 ? (proy / metaN * 100) : 0;   // proyectado al cierre / meta
+  var emoji, estado, col, cardBg, cardBorder;
+
+  if(pctProy >= 100){
+    emoji = '🤩';
+    estado = 'META ALCANZADA al ritmo actual';
+    col = '#15803d'; cardBg = '#f0fdf4'; cardBorder = '#16a34a';
+  } else if(pctProy >= 90){
+    emoji = '😄';
+    estado = 'Excelente — muy cerca de la meta';
+    col = '#16a34a'; cardBg = '#f0fdf4'; cardBorder = '#22c55e';
+  } else if(pctProy >= 75){
+    emoji = '🏃';
+    estado = 'En camino — mantén el ritmo';
+    col = '#65a30d'; cardBg = '#f7fee7'; cardBorder = '#84cc16';
+  } else if(pctProy >= 55){
+    emoji = '😟';
+    estado = 'Atención — acelera el ritmo';
+    col = '#d97706'; cardBg = '#fffbeb'; cardBorder = '#f59e0b';
+  } else if(pctProy >= 30){
+    emoji = '😨';
+    estado = 'Riesgo alto — acción inmediata';
+    col = '#dc2626'; cardBg = '#fef2f2'; cardBorder = '#f87171';
+  } else {
+    emoji = '🚨';
+    estado = 'Situación crítica — intervención urgente';
+    col = '#7f1d1d'; cardBg = '#fef2f2'; cardBorder = '#dc2626';
+  }
+
+  // Actualizar cara/emoji y estado
+  var cara = document.getElementById('sem-cara');
+  var estadoEl = document.getElementById('sem-estado-txt');
+  var llevoCard = document.getElementById('sem-llevo-card');
+  var caraContainer = document.getElementById('sem-cara-container');
+
+  if(cara) cara.textContent = emoji;
+  if(estadoEl){
+    estadoEl.textContent = estado;
+    estadoEl.style.color = col;
+  }
+  if(pctBar) pctBar.style.background = col;
+  if(llevoCard){
+    llevoCard.style.background = cardBg;
+    llevoCard.style.borderColor = cardBorder;
+    llevoCard.style.borderWidth = '3px';
+  }
+  if(caraContainer){
+    caraContainer.style.borderColor = cardBorder;
+    caraContainer.style.background = cardBg;
+  }
+
+  // Actualizar texto de proyección en la tarjeta de proyección
+  var proyEl = document.getElementById('sem-proy-pct');
+  if(proyEl) proyEl.textContent = pctProy.toFixed(1) + '%';
+  var pctMetaEl = document.getElementById('sem-pct-meta');
+  if(pctMetaEl) pctMetaEl.textContent = pctMeta.toFixed(1) + '%';
+
+  // Guardar en state.metas para uso en análisis
+  state.metas.meta_mes_n = metaN;
 }
 
 
@@ -10227,41 +10353,45 @@ function abrirModalSeguimiento(){_openModal('modal-seguimiento',99998,'flex');}
 function cerrarModalSeg(){_closeModal('modal-seguimiento');}
 function iniciarSeguimientoCoord(){
   cerrarModalSeg();
-  // Set nav state
+  poblarSelectRectorias();
   navState.modoSeleccionado='coord';
   navState.h0Completada=true;
-  // Show coord, hide asesor containers
-  var sc=document.getElementById('seg-coord');
-  var sa=document.getElementById('seg-asesor');
-  if(sc) sc.style.display='block';
-  if(sa) sa.style.display='none';
-  // Unlock tabs and navigate to H1
+  navState.h1Guardada=false;
+  navState.h2Guardada=false;
+  if(typeof setMode==='function') setMode('coord');
+  if(typeof mostrarTabs==='function') mostrarTabs();
   if(typeof applyNavState==='function') applyNavState();
   if(typeof actualizarHeader==='function') actualizarHeader();
-  if(typeof initEmpSelectors==='function') initEmpSelectors();
-  // Go to H1 (Metas)
-  var tabH1=document.querySelector('.tab[onclick*="h1"]');
-  if(typeof showTab==='function') showTab('h1', tabH1);
-  mostrarAlertaNav('Seguimiento Coordinacion — Completa las metas en Hoja 1 y guarda para continuar.');
+  var em=document.getElementById('etapa-menu');
+  if(em) em.style.display='none';
+  var hdr=document.getElementById('hdr-actions-bar');
+  if(hdr) hdr.style.display='flex';
+  setTimeout(function(){
+    var t1=document.querySelector('.tab[onclick*="h1"]');
+    if(typeof showTab==='function') showTab('h1',t1);
+  },120);
+  mostrarAlertaNav('Seguimiento Coordinación iniciado — Completa metas en Hoja 1.');
 }
 function iniciarSeguimientoAsesor(){
   cerrarModalSeg();
-  // Set nav state
+  poblarSelectRectorias();
   navState.modoSeleccionado='asesor';
   navState.h0Completada=true;
-  // Show asesor, hide coord containers
-  var sc=document.getElementById('seg-coord');
-  var sa=document.getElementById('seg-asesor');
-  if(sc) sc.style.display='none';
-  if(sa) sa.style.display='block';
-  // Unlock tabs and navigate to H1
+  navState.h1Guardada=false;
+  navState.h2Guardada=false;
+  if(typeof setMode==='function') setMode('asesor');
+  if(typeof mostrarTabs==='function') mostrarTabs();
   if(typeof applyNavState==='function') applyNavState();
   if(typeof actualizarHeader==='function') actualizarHeader();
-  if(typeof initEmpSelectors==='function') initEmpSelectors();
-  // Go to H1 (Metas)
-  var tabH1=document.querySelector('.tab[onclick*="h1"]');
-  if(typeof showTab==='function') showTab('h1', tabH1);
-  mostrarAlertaNav('Seguimiento Asesor — Completa las metas en Hoja 1 y guarda para continuar.');
+  var em=document.getElementById('etapa-menu');
+  if(em) em.style.display='none';
+  var hdr=document.getElementById('hdr-actions-bar');
+  if(hdr) hdr.style.display='flex';
+  setTimeout(function(){
+    var t1=document.querySelector('.tab[onclick*="h1"]');
+    if(typeof showTab==='function') showTab('h1',t1);
+  },120);
+  mostrarAlertaNav('Seguimiento Asesor iniciado — Completa metas en Hoja 1.');
 }
 
 // ===== DIRECTORIO =====
@@ -10557,6 +10687,90 @@ function volverAlLogin(){
   mostrarNormalPassword();
 }
 
+
+// ══ SEGUIMIENTO PROYECTOS ESPECIALES ══
+function iniciarSeguimientoProyectos(){
+  cerrarModalSeg();
+  navState.modoSeleccionado='proyectos';
+  navState.h0Completada=true;
+  // For now go to coord seguimiento with special header
+  var sc=document.getElementById('seg-coord');
+  var sa=document.getElementById('seg-asesor');
+  if(sc) sc.style.display='block';
+  if(sa) sa.style.display='none';
+  if(typeof applyNavState==='function') applyNavState();
+  if(typeof initEmpSelectors==='function') initEmpSelectors();
+  var tabH1=document.querySelector('.tab[onclick*="h1"]');
+  if(typeof showTab==='function') showTab('h1', tabH1);
+  mostrarAlertaNav('Seguimiento Proyectos Especiales — Completa las metas en Hoja 1.');
+}
+
+// ══ POPULATE CUMPLEAÑOS IN TOP SEDES ══
+function renderCumpleanosTopsedes(){
+  var cont=document.getElementById('top-cumpleanos-section');
+  if(!cont||typeof EMPLEADOS_CUM==='undefined') return;
+  var hoy=new Date();
+  var mm=String(hoy.getMonth()+1).padStart(2,'0');
+  var dd=String(hoy.getDate()).padStart(2,'0');
+  var hoyStr=mm+'-'+dd;
+  // Week range
+  var semEnd=new Date(hoy); semEnd.setDate(hoy.getDate()+7);
+  var hoyEmp=EMPLEADOS_CUM.filter(function(e){return e.cumpleanos===hoyStr;});
+  var semEmp=EMPLEADOS_CUM.filter(function(e){
+    if(!e.cumpleanos||e.cumpleanos===hoyStr) return false;
+    var parts=e.cumpleanos.split('-');
+    var empDate=new Date(hoy.getFullYear(),parseInt(parts[0])-1,parseInt(parts[1]));
+    if(empDate<hoy) empDate.setFullYear(hoy.getFullYear()+1);
+    return empDate<=semEnd;
+  });
+  if(!hoyEmp.length&&!semEmp.length){cont.innerHTML='';return;}
+  var html='<div style="background:linear-gradient(135deg,#be185d,#ec4899);border-radius:12px;padding:14px;margin-bottom:0">';
+  html+='<div style="font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;margin-bottom:10px">🎂 Cumpleaños del Equipo</div>';
+  if(hoyEmp.length){
+    html+='<div style="background:rgba(255,255,255,.15);border-radius:10px;padding:12px;margin-bottom:8px">';
+    html+='<div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:8px">🎉 ¡HOY celebran!</div>';
+    hoyEmp.forEach(function(e){
+      var nom=e.nombre||'';
+      var pname=nom.split(' ').filter(function(p){return p.length>2;})[0]||nom.split(' ')[0];
+      html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'
+        +'<div style="font-size:28px">🎂</div>'
+        +'<div>'
+          +'<div style="font-size:13px;font-weight:800;color:#fff">'+nom+'</div>'
+          +'<div style="font-size:10px;color:rgba(255,255,255,.7)">'+( e.cargo||'')+'</div>'
+        +'</div>'
+      +'</div>';
+      html+='<div style="background:rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;font-size:11px;color:#fff;font-style:italic;margin-bottom:4px">'
+        +'🌟 ¡Feliz cumpleaños '+pname+'! Hoy tu día brilla tanto como tu compromiso con la Cooperativa. '
+        +'El equipo PYV celebra contigo este día especial. ¡Que sea un año lleno de logros y alegrías! 🎊💛'
+      +'</div>';
+    });
+    html+='</div>';
+  }
+  if(semEmp.length){
+    html+='<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px;margin-bottom:0">';
+    html+='<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:8px">📅 Esta semana celebran:</div>';
+    semEmp.forEach(function(e){
+      var parts=(e.cumpleanos||'').split('-');
+      var meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      var fechaTxt=parts.length>=2?parts[1]+' de '+(meses[parseInt(parts[0])-1]||''):'';
+      html+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1)">'
+        +'<div style="font-size:11px;color:#fff;font-weight:600">'+e.nombre+'</div>'
+        +'<div style="font-size:10px;color:rgba(255,255,255,.65)">🎂 '+fechaTxt+'</div>'
+      +'</div>';
+    });
+    html+='</div>';
+  }
+  html+='</div>';
+  cont.innerHTML=html;
+}
+
+// ══ Override mostrarTopSedes to also render cumpleaños ══
+var _origMostrarTopSedes=mostrarTopSedes;
+mostrarTopSedes=function(){
+  _origMostrarTopSedes();
+  setTimeout(renderCumpleanosTopsedes,200);
+};
+
 // Auto-show password on page load
 if(document.readyState==="loading"){
   document.addEventListener("DOMContentLoaded",function(){setTimeout(mostrarPantallaPassword,100);});
@@ -10570,6 +10784,133 @@ if(document.readyState==="loading"){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ═══════════════════════════════════════════════════
+// FUNCIONES FALTANTES — AUDITADAS Y RESTAURADAS
+// ═══════════════════════════════════════════════════
+
+var carnet = '';
+function setCarnet(v){
+  carnet = v;
+  var si = document.getElementById('carnet-si');
+  var no = document.getElementById('carnet-no');
+  var styleBase = 'flex:1;padding:8px;border-radius:8px;font-size:12px;cursor:pointer;font-family:Ubuntu,sans-serif;border:1.5px solid ';
+  if(si) si.style.cssText = styleBase + (v==='si'?'#003D45;background:#e0f7f8;font-weight:700':'#e5e7eb;background:#fff;font-weight:400');
+  if(no) no.style.cssText = styleBase + (v==='no'?'#ef4444;background:#fee2e2;font-weight:700':'#e5e7eb;background:#fff;font-weight:400');
+}
+
+function mostrarDetalleProyeccion(){
+  var metaN = state.metas.meta_mes_n || 0;
+  var rcEl = document.getElementById('real_creditos');
+  var realN = rcEl ? (parseFloat(rcEl.value)||0) : (state.seguimiento ? state.seguimiento.real_creditos||0 : 0);
+  var habInfo = typeof getDiasHabilesInfo === 'function' ? getDiasHabilesInfo() : {total:22,transcurridos:1};
+  var tDias = habInfo.total||22, tTrans = habInfo.transcurridos||1;
+  if(metaN>0){
+    var ritmo = tTrans>0 ? (realN/tTrans).toFixed(1) : 0;
+    var proy = tTrans>0 ? Math.round(realN+(realN/tTrans)*Math.max(0,tDias-tTrans)) : realN;
+    var pctProy = (proy/metaN*100).toFixed(1);
+    var debeHoy = Math.round((metaN/tDias)*tTrans);
+    mostrarAlertaNav('Ritmo: '+ritmo+' cred/dia hab. | Proyeccion cierre: '+proy.toLocaleString('es-CO')+' ('+pctProy+'%) | Debe llevar hoy: '+debeHoy.toLocaleString('es-CO'));
+    var sdEl = document.getElementById('sem-debo');
+    if(sdEl) sdEl.textContent = debeHoy.toLocaleString('es-CO');
+  } else {
+    mostrarAlertaNav('Define las metas en Hoja 1 primero.');
+  }
+}
+
+var asesoresSeleccionados = [];
+function initCartaAsesorSelector(){
+  var container = document.getElementById('carta-asesores-container');
+  if(!container || container.dataset.init) return;
+  container.dataset.init = '1';
+  var sel = document.getElementById('carta-asesor-search');
+  if(!sel) return;
+  var emps = typeof EMPLEADOS_BD !== 'undefined' ? Object.entries(EMPLEADOS_BD) : [];
+  emps.forEach(function(pair){
+    var correo=pair[0], emp=pair[1];
+    if(emp.cargo && (emp.cargo.toLowerCase().includes('asesor')||emp.cargo.toLowerCase().includes('analista'))){
+      var o=document.createElement('option');
+      o.value=correo;
+      o.textContent=emp.nombre+' — '+emp.sede;
+      sel.appendChild(o);
+    }
+  });
+}
+
+function renderAsesoresTags(){
+  var container=document.getElementById('asesores-tags');
+  if(!container) return;
+  container.innerHTML='';
+  asesoresSeleccionados.forEach(function(correo){
+    var emp=typeof EMPLEADOS_BD!=='undefined'?EMPLEADOS_BD[correo]:null;
+    if(!emp) return;
+    var tag=document.createElement('span');
+    tag.style.cssText='display:inline-flex;align-items:center;gap:4px;background:#e0f7f8;border:1px solid #00B0B9;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#003D45;margin:2px';
+    var firstName=emp.nombre.split(' ')[0];
+    var btn=document.createElement('span');
+    btn.textContent='×';
+    btn.style.cssText='cursor:pointer;color:#ef4444;font-weight:900;margin-left:2px';
+    btn.setAttribute('data-correo', correo);
+    btn.onclick=function(){ removeAsesorTag(this.getAttribute('data-correo')); };
+    tag.appendChild(document.createTextNode(firstName+' '));
+    tag.appendChild(btn);
+    container.appendChild(tag);
+  });
+}
+
+function removeAsesorTag(correo){
+  asesoresSeleccionados=asesoresSeleccionados.filter(function(c){return c!==correo;});
+  renderAsesoresTags();
+}
+
+function mostrarPantallaRecuperacion(){
+  var ep=document.getElementById('etapa-password');
+  var el=document.getElementById('etapa-login');
+  if(ep) ep.style.display='none';
+  if(el) el.style.display='flex';
+  mostrarAlertaNav('Contacta al administrador del sistema para restablecer tu acceso.');
+}
+
+function resetBreadcrumb(){
+  var bc=document.getElementById('breadcrumb');
+  if(bc) bc.style.display='none';
+}
+
+if(typeof actualizarEstadoTurno==='undefined'){
+  function actualizarEstadoTurno(){
+    var badge=document.getElementById('turno-badge');
+    if(!badge) return;
+    try{
+      var raw=localStorage.getItem('cmd_turno');
+      var t=raw?JSON.parse(raw):null;
+      if(t&&t.ingreso&&!t.salida){
+        badge.style.display='flex';
+        var txt=document.getElementById('turno-hdr-txt');
+        if(txt) txt.textContent='En turno desde '+( t.horaIng||'--:--');
+      } else { badge.style.display='none'; }
+    }catch(e){}
+  }
+}
+
+// AUTO-INIT rectorias select al cargar página
+(function(){
+  function _ir(){if(typeof poblarSelectRectorias==='function') poblarSelectRectorias();}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_ir);
+  else _ir();
+  setTimeout(_ir,400);
+})();
 
 
 
@@ -11344,39 +11685,54 @@ if(document.readyState==="loading"){
 </div>
 
 <div id="modal-seguimiento" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);z-index:99998;align-items:center;justify-content:center;padding:20px">
-<div style="background:#fff;border-radius:18px;max-width:460px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)">
+<div style="background:#fff;border-radius:20px;max-width:500px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)">
   <div style="background:linear-gradient(135deg,#003D45,#005a66);padding:20px 24px">
-    <div style="color:var(--yellow);font-size:15px;font-weight:700"><i class="ti ti-clipboard-data"></i> Tipo de Seguimiento</div>
+    <div style="color:#FFD900;font-size:16px;font-weight:800"><i class="ti ti-clipboard-data"></i> Tipo de Seguimiento</div>
     <div style="color:rgba(255,255,255,.6);font-size:11px;margin-top:3px">Selecciona el seguimiento que vas a realizar</div>
   </div>
-  <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+    <!-- Coordinacion -->
     <div onclick="cerrarModalSeg();iniciarSeguimientoCoord()"
-      style="border:2px solid var(--border);border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:.2s;background:#fff"
-      onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)';this.style.transform='translateY(-2px)'"
-      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform=''">
-      <div style="width:48px;height:48px;background:var(--teal-l);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-        <i class="ti ti-building" style="font-size:24px;color:var(--teal-d)"></i>
+      style="border:2px solid #e5e7eb;border-radius:14px;padding:20px 12px;cursor:pointer;text-align:center;transition:.2s;background:#fff"
+      onmouseover="this.style.borderColor='#003D45';this.style.background='#f0fdfc';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,61,69,.15)'"
+      onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="width:52px;height:52px;background:#f0fdfc;border:2px solid #003D45;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+        <i class="ti ti-building" style="font-size:26px;color:#003D45"></i>
       </div>
-      <div style="font-size:14px;font-weight:700;color:var(--dark)">Coordinacion</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">KPIs, colocacion, portafolio y satisfaccion</div>
-      <div style="margin-top:10px;color:var(--teal-d);font-size:11px;font-weight:700"><i class="ti ti-arrow-right"></i> Iniciar</div>
+      <div style="font-size:13px;font-weight:800;color:#003D45">Coordinacion</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:4px;line-height:1.4">KPIs · Colocacion · Portafolio · Satisfaccion</div>
+      <div style="margin-top:10px;color:#003D45;font-size:11px;font-weight:700">Iniciar →</div>
     </div>
+    <!-- Asesor -->
     <div onclick="cerrarModalSeg();iniciarSeguimientoAsesor()"
-      style="border:2px solid var(--border);border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:.2s;background:#fff"
-      onmouseover="this.style.borderColor='var(--dark)';this.style.background='#f8fafc';this.style.transform='translateY(-2px)'"
-      onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff';this.style.transform=''">
-      <div style="width:48px;height:48px;background:#f0f4f8;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
-        <i class="ti ti-user" style="font-size:24px;color:var(--dark)"></i>
+      style="border:2px solid #e5e7eb;border-radius:14px;padding:20px 12px;cursor:pointer;text-align:center;transition:.2s;background:#fff"
+      onmouseover="this.style.borderColor='#003D45';this.style.background='#f0fdfc';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,61,69,.15)'"
+      onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="width:52px;height:52px;background:#f0fdfc;border:2px solid #003D45;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+        <i class="ti ti-user" style="font-size:26px;color:#003D45"></i>
       </div>
-      <div style="font-size:14px;font-weight:700;color:var(--dark)">Asesor</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px">Leads, atencion, negocios e imagen</div>
-      <div style="margin-top:10px;color:var(--dark);font-size:11px;font-weight:700"><i class="ti ti-arrow-right"></i> Iniciar</div>
+      <div style="font-size:13px;font-weight:800;color:#003D45">Asesor</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:4px;line-height:1.4">Leads · Atencion · Negocios · Imagen</div>
+      <div style="margin-top:10px;color:#003D45;font-size:11px;font-weight:700">Iniciar →</div>
+    </div>
+    <!-- Proyectos Especiales -->
+    <div onclick="cerrarModalSeg();iniciarSeguimientoProyectos()"
+      style="border:2px solid #e5e7eb;border-radius:14px;padding:20px 12px;cursor:pointer;text-align:center;transition:.2s;background:#fff"
+      onmouseover="this.style.borderColor='#003D45';this.style.background='#f0fdfc';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,61,69,.15)'"
+      onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff';this.style.transform='';this.style.boxShadow=''">
+      <div style="width:52px;height:52px;background:#f0fdfc;border:2px solid #003D45;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+        <i class="ti ti-star" style="font-size:26px;color:#003D45"></i>
+      </div>
+      <div style="font-size:13px;font-weight:800;color:#003D45">Proyectos Especiales</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:4px;line-height:1.4">Retos · Iniciativas · Proyectos estrategicos</div>
+      <div style="margin-top:10px;color:#003D45;font-size:11px;font-weight:700">Iniciar →</div>
     </div>
   </div>
   <div style="padding:0 20px 16px;text-align:center">
-    <button onclick="cerrarModalSeg()" style="background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;font-family:Ubuntu,sans-serif">Cancelar</button>
+    <button onclick="cerrarModalSeg()" style="background:none;border:none;color:#9ca3af;font-size:12px;cursor:pointer;font-family:Ubuntu,sans-serif">Cancelar</button>
   </div>
 </div>
+</div></div>
 </div>
 
 <!-- MODAL TOP SEDES — aparece al inicio -->
@@ -11388,7 +11744,30 @@ if(document.readyState==="loading"){
     <div style="position:relative">
       <div style="color:var(--yellow);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Proceso PYV · Cooperativa Minuto de Dios</div>
       <div style="color:#fff;font-size:20px;font-weight:800;line-height:1.2">🏆 Top Sedes en Colocacion</div>
-      <div style="color:rgba(255,255,255,.6);font-size:11px;margin-top:4px">Ranking nacional · Credito Educativo</div>
+      <div style="color:rgba(255,255,255,.6);font-size:11px;margin-top:4px">Ranking nacional · Credito Educativo · S2-2025 / S1-2026</div>
+    </div>
+  </div>
+  <!-- META PROCESO COMERCIAL -->
+  <div style="background:linear-gradient(135deg,#001f24,#002d33);padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08)">
+    <div style="font-size:10px;font-weight:700;color:rgba(255,217,0,.7);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📊 Meta Total Proceso Comercial</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">Meta Periodo</div>
+        <div style="font-size:26px;font-weight:900;color:#FFD900">1.600</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4)">creditos</div>
+      </div>
+      <div style="background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">Ejecutado</div>
+        <div style="font-size:26px;font-weight:900;color:#4ade80">1.073</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4)">colocados</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">Cumplimiento</div>
+        <div style="font-size:26px;font-weight:900;color:#FFD900">67%</div>
+        <div id="top-barra-bg" style="margin-top:6px;background:rgba(255,255,255,.1);border-radius:20px;height:6px;overflow:hidden">
+          <div style="height:100%;background:linear-gradient(90deg,#4ade80,#16a34a);width:67%;border-radius:20px"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div style="padding:20px">
@@ -11437,7 +11816,9 @@ if(document.readyState==="loading"){
         <div style="font-size:10px;color:rgba(255,255,255,.5)">Por seleccionar</div>
       </div>
     </div>
-    <button onclick="cerrarModalTopSedes()" style="width:100%;padding:14px;background:linear-gradient(135deg,#003D45,#005a66);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:Ubuntu,sans-serif">
+    <!-- CUMPLEAÑOS -->
+    <div id="top-cumpleanos-section" style="margin-bottom:14px"></div>
+    <button onclick="cerrarModalTopSedes()" style="width:100%;padding:14px;background:linear-gradient(135deg,#003D45,#005a66);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:Ubuntu,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2)">
       Ingresar al Sistema →
     </button>
   </div>
